@@ -12,10 +12,7 @@ const customJestConfig = {
 
     '^@/public/(.*)$': '<rootDir>/public/$1',
   },
-  setupFilesAfterEnv: [
-    '<rootDir>/src/jest.setup.ts',
-    '<rootDir>/jest.setup.js',
-  ],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   clearMocks: true,
   collectCoverage: true,
   collectCoverageFrom: [
@@ -35,4 +32,4 @@ const customJestConfig = {
   testEnvironment: 'jest-environment-jsdom',
 };
 
-export default createJestConfig(customJestConfig);
+module.exports = createJestConfig(customJestConfig);
