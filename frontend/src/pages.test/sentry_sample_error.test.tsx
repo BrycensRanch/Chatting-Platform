@@ -8,7 +8,7 @@ import SentrySampleError from '@/pages/sentry_sample_error';
 
 describe('Sentry Error page', () => {
   describe('Render method', () => {
-    it('should have h1 tag', () => {
+    it('should have button that throws error', () => {
       render(<SentrySampleError />);
 
       const heading = screen.getByRole('button', {
