@@ -25,10 +25,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version:
-          - 16
-        database:
-          - e2e-postgres
         os:
           - ubuntu-latest
 
@@ -36,10 +32,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js 
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
 
       - name: 📥 Monorepo install all deps & pnpm
         uses: ./.github/actions/pnpm-install
