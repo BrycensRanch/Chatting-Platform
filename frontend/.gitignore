@@ -28,7 +28,6 @@ dockerApp
 DockerRedisCache
 backupPostgres
 .nyc_output
-/cypress
 sentry.properties
 sentry.client.config.js
 sentry.server.config.js

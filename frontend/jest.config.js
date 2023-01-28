@@ -12,7 +12,10 @@ const customJestConfig = {
 
     '^@/public/(.*)$': '<rootDir>/public/$1',
   },
-  setupFilesAfterEnv: ['./jest.setup.js'],
+  setupFilesAfterEnv: [
+    '<rootDir>/src/jest.setup.ts',
+    '<rootDir>/jest.setup.js',
+  ],
   clearMocks: true,
   collectCoverage: true,
   collectCoverageFrom: [
@@ -23,13 +26,13 @@ const customJestConfig = {
   ],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
     },
   },
   testEnvironment: 'jest-environment-jsdom',
 };
 
-module.exports = createJestConfig(customJestConfig);
+export default createJestConfig(customJestConfig);

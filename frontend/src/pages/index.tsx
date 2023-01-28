@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // eslint-disable-next-line @next/next/no-document-import-in-page
+import type { ImageLoader } from 'next/image';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -16,7 +17,7 @@ const Index = () => {
     setPosts(data);
   };
   const router = useRouter();
-  const myLoader = ({ src, width, quality }) => {
+  const myLoader: ImageLoader = ({ src, width, quality }) => {
     return `${router.basePath}/assets/images/${src}?w=${width}&q=${
       quality || 75
     }`;

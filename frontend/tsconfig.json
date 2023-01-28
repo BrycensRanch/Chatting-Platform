@@ -6,7 +6,7 @@
     "resolveJsonModule": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "strict": false,
+    "strict": true,
     "alwaysStrict": true,
     "strictNullChecks": true,
     "noUncheckedIndexedAccess": true,
