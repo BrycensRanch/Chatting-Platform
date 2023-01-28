@@ -7,6 +7,7 @@ const DEFAULT_SCOPES = ["repo", "frontend", "backend"];
 Promise.all([readDirectory("./frontend"), readDirectory("./backend")]).then((values) => {
 
 const dirNames = values[0].concat(values[1])
+  .filter((e) => e.includes("node_modules")) // this is why every commit failed
   .map((e) => dirName(e))
   .map( (entry) => {
     const newEntry = fileInfo(entry)
