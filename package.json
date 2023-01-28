@@ -1,0 +1,21 @@
+{
+  "name": "chatting-platform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "pnpm install && cd frontend && pnpm install && cd ../backend && pnpm install",
+    "update-all": "pnpm update && cd frontend && pnpm update && cd ../backend && pnpm update",
+    "install-all:npm": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "docker-start": "docker compose up --build",
+    "frontend-start": "cd frontend && npm run cleanbuild  && cd .. && docker compose up chatfrontend --detach --build",
+    "backend-start": "cd backend && npm run cleanbuild  && cd .. && docker compose up chatbackend --detach --build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "commitlint-config-monorepo": "^2.0.2",
+    "recursive-readdir": "^2.2.3"
+  }
+}

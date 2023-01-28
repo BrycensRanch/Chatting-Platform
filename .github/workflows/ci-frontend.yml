@@ -1,0 +1,89 @@
+name: CI-frontend
+
+on:
+  push:
+    branches:
+      - "*"
+    # Only consider those paths to trigger the action
+    paths:
+      - 'frontend/**'
+      - '.github/**'
+
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    # Only consider those paths to trigger the action
+    paths:
+      - 'frontend/**'
+      - '.github/**'
+
+jobs:
+  build-and-test:
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - 16
+        database:
+          - e2e-postgres
+        os:
+          - ubuntu-latest
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 📥 Monorepo install all deps & pnpm
+        uses: ./.github/actions/pnpm-install
+
+      # see https://github.com/vercel/next.js/pull/27362
+      - name: Restore frontend build from cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/frontend/.next/cache
+            ${{ github.workspace }}/.cache
+            ${{ github.workspace }}/**/tsconfig.tsbuildinfo
+          key: ${{ runner.os }}-frontend-${{ hashFiles('**/pnpm.lock') }}-${{ hashFiles('frontend/src/**.[jt]sx?', 'frontend/src/**.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-app-${{ hashFiles('**/pnpm.lock') }}-
+
+      - name: Create and seed test database
+        working-directory: backend
+        run: |
+          pnpm exec prisma db push
+          pnpm exec prisma db seed
+        env:
+          PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-frontend?schema=public
+
+      - name: Build Frontend
+        working-directory: frontend
+        run: |
+          pnpm build
+        env:
+          PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-frontend?schema=public
+          NEXTJS_SENTRY_UPLOAD_DRY_RUN: true
+      
+      - name: 🔢 Run Unit Tests
+        working-directory: frontend
+        run: |
+          pnpm test
+      - uses: codecov/codecov-action@v3
+        with:
+          files: frontend/coverage/coverage-final.json
+          flags: unittests # optional
+          name: codecov-frontend # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: false # optional (default = false)
+      - name: Start docker compose
+        run: pnpm frontend-start
+      - name: 🧪 Run Cypress Tests
+        uses: cypress-io/github-action@v5

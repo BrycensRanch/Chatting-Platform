@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "rvest.vs-code-prettier-eslint",
+    "mikestead.dotenv",
+    "csstools.postcss",
+    "bradlc.vscode-tailwindcss",
+    "orta.vscode-jest",
+    "knisterpeter.vscode-commitizen",
+    "prisma.prisma",
+    "ms-edgedevtools.vscode-edge-devtools",
+    "42crunch.vscode-openapi",
+    "rangav.vscode-thunder-client",
+    "ms-azuretools.vscode-docker",
+    "davidanson.vscode-markdownlint"
+  ]
+}

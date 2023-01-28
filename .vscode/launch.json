@@ -1,0 +1,72 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js: debug server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "cd frontend && npm run dev"
+    },
+    {
+      "name": "Next.js: debug client-side",
+      "type": "msedge",
+      "request": "launch",
+      "url": "http://localhost:3000"
+    },
+    {
+      "name": "Next.js: debug full stack",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "cd frontend && ${workspaceFolder}/frontend/node_modules/.bin/cross-env DEBUG=* NODE_OPTIONS='--inspect' ${workspaceFolder}/frontend/node_modules/.bin/next dev",
+      "serverReadyAction": {
+        "pattern": "started server on .+, url: (https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithEdge"
+      }
+    },
+    // Reptitive?
+    {
+      "name": "Attach by Process ID on port 3001",
+      "port": 9229,
+      "request": "attach",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "Attach by Process ID on port 3001",
+      "port": 3001,
+      "request": "attach",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "Attach by Process ID on port 9229",
+      "port": 9229,
+      "request": "attach",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "type": "node-terminal",
+      "request": "launch",
+      "name": "Start fastify",
+      "skipFiles": ["<node_internals>/**"],
+      // "runtimeArgs": ["--inspect"],
+      // "program": "${workspaceFolder}/backend/node_modules/.bin/cross-env",
+      // "args": [
+      //   "DEBUG=*",
+      //   "${workspaceFolder}/backend/node_modules/.bin/ts-node-dev",
+      //   "--respawn",
+      //   "--transpile-only",
+      //   "--ignore-watch='test .vscode'",
+      //   "--rs",
+      //   "${workspaceFolder}/backend/init.ts"
+      // ]
+      "autoAttachChildProcesses": true,
+      "command": "${workspaceFolder}/backend/node_modules/.bin/cross-env DEBUG=* cd backend && ${workspaceFolder}/backend/node_modules/.bin/ts-node-dev --respawn --transpile-only --inspect=3001 --rs ${workspaceFolder}/backend/app.ts"
+    }
+  ]
+}
