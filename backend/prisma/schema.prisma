@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("postgresql://prisma_user:13bhlm3dUO9dvSJ1I@host.docker.internal:5433/prisma")
+  url      = env("PRISMA_DATABASE_URL")
 }
 
 model User {
