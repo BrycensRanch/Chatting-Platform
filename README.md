@@ -17,8 +17,11 @@
   <a aria-label="Frontend Build Status" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ci-frontend.yml">
 <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/BrycensRanch/Chatting-Platform/ci-frontend.yml?label=FRONTEND&logo=github&style=for-the-badge">
   </a>
-    <a aria-label="Frontend Build Status" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ci-backend.yml">
+    <a aria-label="Backend Build Status" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ci-backend.yml">
 <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/BrycensRanch/Chatting-Platform/ci-backend.yml?label=BACKEND&logo=github&style=for-the-badge">
+  </a>
+  <a aria-label="Backend Build Status" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ci-backend.yml">
+<img alt="Codecov" src="https://img.shields.io/codecov/c/github/BrycensRanch/Chatting-Platform?flag=unittests&label=UNIT%20TESTS%20COVERAGE&logo=codecov&style=for-the-badge">
   </a>
   <a aria-label="Codefactor grade" href=https://www.codefactor.io/repository/github/BrycensRanch/Chatting-Platform">
     <img alt="Codefactor" src="https://img.shields.io/codefactor/grade/github/BrycensRanch/Chatting-Platform?label=Codefactor&logo=codefactor&style=for-the-badge&labelColor=000000" />
