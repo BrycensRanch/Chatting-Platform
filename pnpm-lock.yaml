@@ -9,7 +9,7 @@ specifiers:
   husky: ^8.0.2
   i: ^0.3.7
   lint-staged: ^13.0.3
-  recursive-readdir: ^2.2.3
+  recursive-readdir-synchronous: ^0.0.4
 
 devDependencies:
   '@commitlint/cli': 17.4.2
@@ -20,7 +20,7 @@ devDependencies:
   husky: 8.0.3
   i: 0.3.7
   lint-staged: 13.1.0
-  recursive-readdir: 2.2.3
+  recursive-readdir-synchronous: 0.0.4
 
 packages:
 
@@ -1406,6 +1406,12 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
+  /minimatch/3.0.4:
+    resolution: {integrity: sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==}
+    dependencies:
+      brace-expansion: 1.1.11
+    dev: true
+
   /minimatch/3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
     dependencies:
@@ -1660,11 +1666,11 @@ packages:
       util-deprecate: 1.0.2
     dev: true
 
-  /recursive-readdir/2.2.3:
-    resolution: {integrity: sha512-8HrF5ZsXk5FAH9dgsx3BlUer73nIhuj+9OrQwEbLTPOBzGkL1lsFCR01am+v+0m2Cmbs1nP12hLDl5FA7EszKA==}
-    engines: {node: '>=6.0.0'}
+  /recursive-readdir-synchronous/0.0.4:
+    resolution: {integrity: sha512-TKglvNd53H9nSeSIX0j6wVpYfO7wc7/Lb9ugL+Qa/yNL17SmAZjZeNdaPtsAsdwp+0iO3zq25NKocEcEec/uRw==}
+    engines: {node: '>=0.6.6'}
     dependencies:
-      minimatch: 3.1.2
+      minimatch: 3.0.4
     dev: true
 
   /redent/3.0.0:

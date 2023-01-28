@@ -1,13 +1,11 @@
 const { lstatSync: fileInfo } = require("fs");
 const {dirname: dirName, basename: baseName} = require("path")
-var readDirectory = require("recursive-readdir");
+var readDirectory = require('recursive-readdir-synchronous');
 
-const DEFAULT_SCOPES = ["repo", "frontend", "backend"];
+const DEFAULT_SCOPES = ["repo", "frontend", "backend", "commitlint"];
 
-Promise.all([readDirectory("./frontend"), readDirectory("./backend")]).then((values) => {
-
-const dirNames = values[0].concat(values[1])
-  .filter((e) => e.includes("node_modules")) // this is why every commit failed
+const dirNames = readDirectory("./frontend", ["node_modules"]).concat(readDirectory("./backend", ["node_modules"]))
+  .filter((e) => !e.includes("node_modules")) // this is why every commit failed
   .map((e) => dirName(e))
   .map( (entry) => {
     const newEntry = fileInfo(entry)
@@ -24,4 +22,3 @@ module.exports = {
     "scope-enum": [2, "always", scopes],
   },
 };
-})
