@@ -14,9 +14,11 @@
   <a aria-label="Semantic Release" href="https://github.com/semantic-release/semantic-release">
     <img alt="Semantic Release Badge" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=for-the-badge">
 
-  <a aria-label="Build" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ACI">
-    <img alt="GitHub branch checks state" src="https://img.shields.io/github/checks-status/BrycensRanch/Chatting-Platform/main?label=CI&logo=github&style=for-the-badge">
-
+  <a aria-label="Frontend Build Status" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ci-frontend.yml">
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/BrycensRanch/Chatting-Platform/ci-frontend.yml?label=FRONTEND&logo=github&style=for-the-badge">
+  </a>
+    <a aria-label="Frontend Build Status" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ci-backend.yml">
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/BrycensRanch/Chatting-Platform/ci-backend.yml?label=BACKEND&logo=github&style=for-the-badge">
   </a>
   <a aria-label="Codefactor grade" href=https://www.codefactor.io/repository/github/BrycensRanch/Chatting-Platform">
     <img alt="Codefactor" src="https://img.shields.io/codefactor/grade/github/BrycensRanch/Chatting-Platform?label=Codefactor&logo=codefactor&style=for-the-badge&labelColor=000000" />
