@@ -6,6 +6,7 @@
   "scripts": {
     "prepare": "husky install",
     "install-all": "pnpm install && cd frontend && pnpm install && cd ../backend && pnpm install",
+    "install-all:ci": "pnpm install --frozen-lockfile && cd frontend && pnpm install --frozen-lockfile && cd ../backend && pnpm install --frozen-lockfile",
     "update-all": "pnpm update && cd frontend && pnpm update && cd ../backend && pnpm update",
     "install-all:npm": "npm install && cd frontend && npm install && cd ../backend && npm install",
     "docker-start": "docker compose up --build",
