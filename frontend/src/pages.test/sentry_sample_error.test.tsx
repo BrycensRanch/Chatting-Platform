@@ -11,8 +11,8 @@ describe('Sentry Error page', () => {
     it('should have h1 tag', () => {
       render(<SentrySampleError />);
 
-      const heading = screen.getByRole('head', {
-        name: /Sentry Onboarding/,
+      const heading = screen.getByRole('button', {
+        name: /Throw error/,
       });
 
       expect(heading).toBeInTheDocument();
