@@ -16,8 +16,7 @@
     "clean": "rimraf dist",
     "dev": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only app.ts",
     "format": "prettier-eslint --write \"{,!(node_modules)/**/}*.{js,jsx,ts,tsx}\"",
-    "commit": "cz",
-    "prepare": "husky install"
+    "commit": "cz"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",

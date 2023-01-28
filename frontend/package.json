@@ -26,7 +26,6 @@
     "e2e": "start-server-and-test dev http://localhost:3000 cypress",
     "e2e:headless": "start-server-and-test dev http://localhost:3000 cypress:headless",
     "format": "prettier-eslint --write \"{,!(node_modules)/**/}*.{js,jsx,ts,tsx}\"",
-    "prepare": "husky install",
     "env": "sync-dotenv"
   },
   "keywords": [],

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prepare": "husky install",
     "install-all": "pnpm install && cd frontend && pnpm install && cd ../backend && pnpm install",
     "update-all": "pnpm update && cd frontend && pnpm update && cd ../backend && pnpm update",
     "install-all:npm": "npm install && cd frontend && npm install && cd ../backend && npm install",
@@ -19,6 +20,10 @@
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
     "@commitlint/cz-commitlint": "^17.1.2",
+    "i": "^0.3.7",
+    "commitizen": "^4.2.5",
+    "lint-staged": "^13.0.3",
+    "husky": "^8.0.2",
     "recursive-readdir": "^2.2.3"
   }
 }
