@@ -59,9 +59,6 @@
     "uri-js": "^4.4.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.1.2",
-    "@commitlint/config-conventional": "^17.1.0",
-    "@commitlint/cz-commitlint": "^17.1.2",
     "@types/node": "^18.11.5",
     "@types/tap": "^15.0.7",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
