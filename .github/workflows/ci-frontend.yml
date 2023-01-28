@@ -52,13 +52,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-app-${{ hashFiles('**/pnpm.lock') }}-
 
-      - name: Create and seed test database
-        working-directory: backend
-        run: |
-          pnpm exec prisma db push
-          pnpm exec prisma db seed
-        env:
-          PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-frontend?schema=public
+      # - name: Create and seed test database
+      #   working-directory: backend
+      #   run: |
+      #     pnpm exec prisma db push
+      #     pnpm exec prisma db seed
+      #   env:
+      #     PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-frontend?schema=public
 
       - name: Build Frontend
         working-directory: frontend
