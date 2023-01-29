@@ -71,13 +71,10 @@ jobs:
           pnpm add coveralls --save-dev && pnpm test
         env: 
            COVERALLS_REPO_TOKEN: uAAFMrMGWR2DpgN8GSupdDSFWJZTAuIZV
-      - uses: codecov/codecov-action@v3
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
         with:
-          files: backend/coverage/coverage-final.json
-          flags: unittests-backend # optional
-          name: codecov-backend # optional
-          fail_ci_if_error: true # optional (default = false)
-          verbose: false # optional (default = false)
+          github-token: uAAFMrMGWR2DpgN8GSupdDSFWJZTAuIZV
       # - name: Start docker compose
       #   run: pnpm backend-start
       # - name: 🧪 Run Cypress Tests
