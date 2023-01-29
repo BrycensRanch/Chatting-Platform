@@ -2,7 +2,7 @@ const { lstatSync: fileInfo } = require("fs");
 const {dirname: dirName, basename: baseName} = require("path")
 var readDirectory = require('recursive-readdir-synchronous');
 
-const DEFAULT_SCOPES = ["repo", "frontend", "backend", "commitlint"];
+const DEFAULT_SCOPES = ["repo", "frontend", "backend", "commitlint", "sec", "security", "deps", "dependencies"];
 
 const dirNames = readDirectory("./frontend", ["node_modules"]).concat(readDirectory("./backend", ["node_modules"]))
   .filter((e) => !e.includes("node_modules")) // this is why every commit failed
