@@ -11,7 +11,6 @@ import { createPrismaRedisCache } from 'prisma-redis-middleware';
  */
 export default fp<FastifyGracefulExitOptions>(async (fastify) => {
   const { redis: redisInstance } = fastify;
-  await fastify.redis.ping();
   fastify.prisma.$use(
     createPrismaRedisCache({
       models: [
