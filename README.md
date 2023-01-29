@@ -86,3 +86,4 @@ Please read the [Contributing Guidelines](CONTRIBUTING.md) before submitting any
 ## License
 
 [MIT](./LICENSE)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FBrycensRanch%2FChatting-Platform.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FBrycensRanch%2FChatting-Platform?ref=badge_large)
