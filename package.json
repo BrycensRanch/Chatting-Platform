@@ -27,5 +27,9 @@
     "i": "^0.3.7",
     "lint-staged": "^13.1.0",
     "recursive-readdir-synchronous": "^0.0.4"
-  }
+  },
+  "workspaces": [
+    "frontend/*",
+    "backend/*"
+  ]
 }

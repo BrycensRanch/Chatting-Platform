@@ -1,4 +1,4 @@
-name: CI-frontend
+name: CI-backend
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - "*"
     # Only consider those paths to trigger the action
     paths:
-      - 'frontend/**'
+      - 'backend/**'
       - '.github/**'
 
   pull_request:
@@ -16,7 +16,7 @@ on:
       - reopened
     # Only consider those paths to trigger the action
     paths:
-      - 'frontend/**'
+      - 'backend/**'
       - '.github/**'
 
 jobs:
@@ -41,16 +41,15 @@ jobs:
         uses: ./.github/actions/pnpm-install
 
       # see https://github.com/vercel/next.js/pull/27362
-      - name: Restore frontend build from cache
+      - name: Restore backend build from cache
         uses: actions/cache@v3
         with:
           path: |
-            ${{ github.workspace }}/frontend/.next/cache
-            ${{ github.workspace }}/.cache
+            ${{ github.workspace }}/backend/dist
             ${{ github.workspace }}/**/tsconfig.tsbuildinfo
-          key: ${{ runner.os }}-frontend-${{ hashFiles('**/pnpm.lock') }}-${{ hashFiles('frontend/src/**.[jt]sx?', 'frontend/src/**.json') }}
+          key: ${{ runner.os }}-backend-${{ hashFiles('**/pnpm.lock') }}-${{ hashFiles('backend/src/**.[jt]s?', 'backend/src/**.json') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-app-${{ hashFiles('**/pnpm.lock') }}-
+            ${{ runner.os }}-backend-${{ hashFiles('**/pnpm.lock') }}-
 
       # - name: Create and seed test database
       #   working-directory: backend
@@ -58,29 +57,28 @@ jobs:
       #     pnpm exec prisma db push
       #     pnpm exec prisma db seed
       #   env:
-      #     PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-frontend?schema=public
+      #     PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-backend?schema=public
 
       - name: Build Frontend
-        working-directory: frontend
+        working-directory: backend
         run: |
           pnpm build
-        env:
-          PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-frontend?schema=public
-          NEXTJS_SENTRY_UPLOAD_DRY_RUN: true
       
       - name: 🔢 Run Unit Tests
-        working-directory: frontend
+        working-directory: backend
         continue-on-error: true
         run: |
-          pnpm test
+          pnpm add coveralls --save-dev && pnpm test
+        env: 
+           COVERALLS_REPO_TOKEN: uAAFMrMGWR2DpgN8GSupdDSFWJZTAuIZV
       - uses: codecov/codecov-action@v3
         with:
-          files: frontend/coverage/coverage-final.json
-          flags: unittests # optional
-          name: codecov-frontend # optional
+          files: backend/coverage/coverage-final.json
+          flags: unittests-backend # optional
+          name: codecov-backend # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: false # optional (default = false)
       # - name: Start docker compose
-      #   run: pnpm frontend-start
-      - name: 🧪 Run Cypress Tests
-        uses: cypress-io/github-action@v5
+      #   run: pnpm backend-start
+      # - name: 🧪 Run Cypress Tests
+      #   uses: cypress-io/github-action@v5

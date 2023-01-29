@@ -107,7 +107,6 @@ supertokens.init({
       apiKey: 'B84i@WH7b9Cj9jzRvk^cJ', // I love committing numerous secrets to Github
     }),
   ],
-  flowType: 'USER_INPUT_CODE_AND_MAGIC_LINK',
 });
 const fastify: FastifyPluginAsync<AppOptions> = async (
   app,
