@@ -26,24 +26,6 @@
     <a aria-label="Backend Code Coverage" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ci-backend.yml">
 <img alt="Coveralls" src="https://img.shields.io/coverallsCoverage/github/BrycensRanch/Chatting-Platform?label=BACKEND%20UNIT%20tests%20COVERAGE&style=for-the-badge">
   </a>
-  <a aria-label="Codefactor grade" href=https://www.codefactor.io/repository/github/BrycensRanch/Chatting-Platform">
-    <img alt="Codefactor" src="https://img.shields.io/codefactor/grade/github/BrycensRanch/Chatting-Platform?label=Codefactor&logo=codefactor&style=for-the-badge&labelColor=000000" />
-  </a>
-  <a aria-label="CodeClimate maintainability" href="https://codeclimate.com/github/BrycensRanch/Chatting-Platform">
-    <img alt="Maintainability" src="https://img.shields.io/codeclimate/maintainability/BrycensRanch/Chatting-Platform?label=Maintainability&logo=code-climate&style=for-the-badge&labelColor=000000" />
-  </a>
-  <a aria-label="CodeClimate technical debt" href="https://codeclimate.com/github/BrycensRanch/Chatting-Platform">
-    <img alt="Techdebt" src="https://img.shields.io/codeclimate/tech-debt/BrycensRanch/Chatting-Platform?label=TechDebt&logo=code-climate&style=for-the-badge&labelColor=000000" />
-  </a>
-  <a aria-label="Codacy grade" href="https://www.codacy.com/gh/BrycensRanch/Chatting-Platform/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=BrycensRanch/Chatting-Platform&amp;utm_campaign=Badge_Grade">
-    <img alt="Codacy grade" src="https://img.shields.io/codacy/grade/dff9c944af284a0fad4e165eb1727467?logo=codacy&style=flat-square&labelColor=000&label=Codacy">
-  </a>
-  <a aria-label="LoC">  
-    <img alt="LoC" src="https://img.shields.io/tokei/lines/github/BrycensRanch/Chatting-Platform?style=for-the-badge&labelColor=000000" />
-  </a>
-  <a aria-label="Top language" href="https://github.com/BrycensRanch/Chatting-Platform/search?l=typescript">
-    <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/BrycensRanch/Chatting-Platform?style=flat-square&labelColor=000&color=blue">
-  </a>
   <a aria-label="Licence" href="https://github.com/BrycensRanch/Chatting-Platform/blob/main/LICENSE">
     <img alt="Licence" src="https://img.shields.io/github/license/BrycensRanch/Chatting-Platform?style=for-the-badge&labelColor=000000" />
   </a>
