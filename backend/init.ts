@@ -4,7 +4,6 @@
 import type { AutoloadPluginOptions } from '@fastify/autoload';
 import AutoLoad from '@fastify/autoload';
 import cors from '@fastify/cors';
-import formDataPlugin from '@fastify/formbody';
 import helmet from '@fastify/helmet';
 import { PrismaClient } from '@prisma/client';
 import type { FastifyInstance, FastifyPluginAsync } from 'fastify';
@@ -172,7 +171,6 @@ const fastify: FastifyPluginAsync<AppOptions> = async (
   void app.register(AutoLoad, {
     dir: join(__dirname, 'routes'),
   });
-  await app.register(formDataPlugin);
   const healthCheckConfig = {
     maxEventLoopDelay: 1000,
     maxHeapUsedBytes: 100000000,
