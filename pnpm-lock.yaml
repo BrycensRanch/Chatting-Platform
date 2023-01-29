@@ -1,28 +1,30 @@
 lockfileVersion: 5.4
 
-specifiers:
-  '@commitlint/cli': ^17.4.2
-  '@commitlint/config-conventional': ^17.4.2
-  '@commitlint/cz-commitlint': ^17.4.2
-  '@testing-library/jest-dom': ^5.16.5
-  commitizen: ^4.3.0
-  commitlint-config-monorepo: ^2.0.2
-  husky: ^8.0.3
-  i: ^0.3.7
-  lint-staged: ^13.1.0
-  recursive-readdir-synchronous: ^0.0.4
+importers:
 
-devDependencies:
-  '@commitlint/cli': 17.4.2
-  '@commitlint/config-conventional': 17.4.2
-  '@commitlint/cz-commitlint': 17.4.2_commitizen@4.3.0
-  '@testing-library/jest-dom': 5.16.5
-  commitizen: 4.3.0
-  commitlint-config-monorepo: 2.0.2
-  husky: 8.0.3
-  i: 0.3.7
-  lint-staged: 13.1.0
-  recursive-readdir-synchronous: 0.0.4
+  .:
+    specifiers:
+      '@commitlint/cli': ^17.4.2
+      '@commitlint/config-conventional': ^17.4.2
+      '@commitlint/cz-commitlint': ^17.4.2
+      '@testing-library/jest-dom': ^5.16.5
+      commitizen: ^4.3.0
+      commitlint-config-monorepo: ^2.0.2
+      husky: ^8.0.3
+      i: ^0.3.7
+      lint-staged: ^13.1.0
+      recursive-readdir-synchronous: ^0.0.4
+    devDependencies:
+      '@commitlint/cli': 17.4.2
+      '@commitlint/config-conventional': 17.4.2
+      '@commitlint/cz-commitlint': 17.4.2_i4x6owxztfhigiiqlxwntt4k24
+      '@testing-library/jest-dom': 5.16.5
+      commitizen: 4.3.0
+      commitlint-config-monorepo: 2.0.2
+      husky: 8.0.3
+      i: 0.3.7
+      lint-staged: 13.1.0
+      recursive-readdir-synchronous: 0.0.4
 
 packages:
 
@@ -93,7 +95,7 @@ packages:
       ajv: 8.12.0
     dev: true
 
-  /@commitlint/cz-commitlint/17.4.2_commitizen@4.3.0:
+  /@commitlint/cz-commitlint/17.4.2_i4x6owxztfhigiiqlxwntt4k24:
     resolution: {integrity: sha512-KNNuY6pQq5alnyJjzXyoQ7eeymRe5KXfSn/QTh6wto1p9gEBPxkrTZE2rX4S6pCpZh8jEFEm0KEqgYDb4KGLxg==}
     engines: {node: '>=v14'}
     peerDependencies:
@@ -105,6 +107,7 @@ packages:
       '@commitlint/types': 17.4.0
       chalk: 4.1.2
       commitizen: 4.3.0
+      inquirer: 8.2.5
       lodash.isplainobject: 4.0.6
       word-wrap: 1.2.3
     transitivePeerDependencies:
@@ -158,6 +161,7 @@ packages:
   /@commitlint/load/17.4.2:
     resolution: {integrity: sha512-Si++F85rJ9t4hw6JcOw1i2h0fdpdFQt0YKwjuK4bk9KhFjyFkRxvR3SB2dPaMs+EwWlDrDBGL+ygip1QD6gmPw==}
     engines: {node: '>=v14'}
+    requiresBuild: true
     dependencies:
       '@commitlint/config-validator': 17.4.0
       '@commitlint/execute-rule': 17.4.0
