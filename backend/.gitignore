@@ -63,6 +63,7 @@ profile*
 dev.db
 
 PostgresData
+PostgresData2
 dockerApp
 DockerRedisCache
 backupPostgres

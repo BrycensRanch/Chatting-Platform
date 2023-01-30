@@ -3,24 +3,41 @@
 import type { ImageLoader } from 'next/image';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
 
 const Index = () => {
-  const [posts, setPosts] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  const [isLoading, setLoading] = useState(false);
 
-  const fetchPosts = async () => {
-    const response = await fetch('http://127.0.0.1:8000/db/feed');
-    const data = await response.json();
-    setPosts(data);
+  const fetchRooms = async () => {
+    try {
+      const response = await fetch('http://10.0.0.122:8000/v1/rooms');
+      const data = await response.json();
+      return data;
+    } catch {
+      return [];
+    }
   };
   const router = useRouter();
   const myLoader: ImageLoader = ({ src, width, quality }) => {
     return `${router.basePath}/assets/images/${src}?w=${width}&q=${
       quality || 75
     }`;
+  };
+  useEffect(() => {
+    setLoading(true);
+    fetchRooms().then((data) => {
+      setRooms(data);
+      setLoading(false);
+    });
+  }, []);
+  const [roomName, setRoomName] = useState('');
+
+  const joinRoom = () => {
+    router.push(`/room/${roomName || Math.random().toString(36).slice(2)}`);
   };
 
   return (
@@ -59,9 +76,21 @@ const Index = () => {
       </p>
       <h2 className="text-lg font-semibold">Next js Boilerplate Features</h2>
       <p>Developer experience first:</p>
-      <button onClick={fetchPosts}>Get posts from DB</button>
+      {isLoading ? <p>Loading...</p> : ''}
+      {!rooms.length ? <p>No room data or backend is offline</p> : ''}
+      <main>
+        <h1>Lets create a room!</h1>
+        <input
+          aria-label="room name"
+          onChange={(e) => setRoomName(e.target.value)}
+          value={roomName}
+        />
+        <button onClick={joinRoom} type="button">
+          Join Room
+        </button>
+      </main>
       <ul>
-        {posts.map(
+        {rooms?.map(
           (post: {
             id: string;
             title: string;

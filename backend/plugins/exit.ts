@@ -21,7 +21,7 @@ export default fp<FastifyGracefulExitOptions>(async (fastify) => {
       storage: { type: 'redis', options: { client: redisInstance } },
       cacheTime: 300,
       excludeModels: ['Product', 'Cart'],
-      excludeMethods: ['count', 'groupBy'],
+      excludeMethods: ['count', 'groupBy', 'queryRaw'],
     })
   );
   await fastify.register(require('@fastify/swagger'), {

@@ -16,15 +16,7 @@ import inclusion from 'inclusion';
 // eslint-disable-next-line import/no-named-default
 import { default as Redis } from 'ioredis';
 import { join } from 'path';
-import supertokens from 'supertokens-node';
-import { errorHandler } from 'supertokens-node/framework/fastify';
-import Dashboard from 'supertokens-node/recipe/dashboard';
-import Session from 'supertokens-node/recipe/session';
-import ThirdPartyPasswordless, {
-  Apple,
-  Github,
-  Google,
-} from 'supertokens-node/recipe/thirdpartypasswordless';
+import type { Server } from 'socket.io';
 
 require('dotenv').config();
 
@@ -35,7 +27,7 @@ export type AppOptions = {
   //   cert: string;
   // };
   // https: boolean;
-  logger: boolean;
+  logger: {};
   prefix: string;
 } & Partial<AutoloadPluginOptions>;
 // Application SSL, for Nginx to use to ensure that this Fastify instance is trusted.
@@ -48,73 +40,26 @@ const options: AppOptions = {
   //   key: path.join(SSLFolder, 'key.pem'),
   //   cert: path.join(SSLFolder, 'certificate.pem'),
   // },
-  logger: true,
+  logger: {
+    level: 'info',
+    transport: {
+      target: 'pino-pretty',
+    },
+  },
   prefix: 'hi',
 };
 if (!fs.existsSync(SSLFolder)) {
   fs.mkdirSync(SSLFolder, { recursive: true });
 }
-supertokens.init({
-  framework: 'fastify',
-  supertokens: {
-    connectionURI: `http://localhost:3567`,
-    // apiKey: "someKey" // OR can be undefined
-  },
-  appInfo: {
-    // learn more about this on https://supertokens.com/docs/session/appinfo
-    appName: 'ChatPlatform',
-    apiDomain: `http://localhost:8000`,
-    websiteDomain: `http://localhost:3000`,
-    apiBasePath: '/auth',
-    websiteBasePath: '/auth',
-  },
-  recipeList: [
-    ThirdPartyPasswordless.init({
-      flowType: 'USER_INPUT_CODE_AND_MAGIC_LINK',
-      contactMethod: 'EMAIL',
-      providers: [
-        // We have provided you with development keys which you can use for testing.
-        // IMPORTANT: Please replace them with your own OAuth keys for production use.
-        Google({
-          clientId:
-            '1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com',
-          clientSecret: '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',
-        }),
-        Github({
-          clientId: '467101b197249757c71f',
-          clientSecret: 'e97051221f4b6426e8fe8d51486396703012f5bd',
-        }),
-        Apple({
-          clientId: '4398792-io.supertokens.example.service',
-          clientSecret: {
-            keyId: '7M48Y4RYDL',
-            privateKey:
-              '-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgu8gXs+XYkqXD6Ala9Sf/iJXzhbwcoG5dMh1OonpdJUmgCgYIKoZIzj0DAQehRANCAASfrvlFbFCYqn3I2zeknYXLwtH30JuOKestDbSfZYxZNMqhF/OzdZFTV0zc5u5s3eN+oCWbnvl0hM+9IW0UlkdA\n-----END PRIVATE KEY-----',
-            teamId: 'YWQCXGJRJL',
-          },
-        }),
-        // Facebook({
-        //     clientSecret: "FACEBOOK_CLIENT_SECRET",
-        //     clientId: "FACEBOOK_CLIENT_ID"
-        // })
-      ],
-    }),
-    Session.init({
-      // sessionScope: ".example.com"
-    }), // initializes session features
-    Dashboard.init({
-      apiKey: 'B84i@WH7b9Cj9jzRvk^cJ', // I love committing numerous secrets to Github
-    }),
-  ],
-});
+
 const fastify: FastifyPluginAsync<AppOptions> = async (
   app,
   _opts
 ): Promise<void> => {
   // Let's not run this while testing/prod... It's done repeatedly and it's very very annoying.
   if (
-    process.env.NODE_ENV !== 'test' &&
-    process.env.NODE_ENV !== 'production'
+    process.env.NODE_APP_INSTANCE === '0' ||
+    (!process.env.NODE_APP_INSTANCE && process.env.NODE_ENV !== 'test')
   ) {
     // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     const printRoutes: typeof import('fastify-print-routes')['default'] = (
@@ -122,14 +67,13 @@ const fastify: FastifyPluginAsync<AppOptions> = async (
     ).default;
     await app.register(printRoutes);
   }
-  app.setErrorHandler(errorHandler());
 
   await app.register(helmet, {
     contentSecurityPolicy: false,
   });
   await app.register(cors, {
-    origin: 'http://localhost:3000',
-    allowedHeaders: ['Content-Type', ...supertokens.getAllCORSHeaders()],
+    origin: '*',
+    allowedHeaders: ['Content-Type', 'Access-Control-Allow-Origin'],
     methods: ['GET', 'PUT', 'POST', 'DELETE'],
     credentials: true,
   });
@@ -178,29 +122,28 @@ const fastify: FastifyPluginAsync<AppOptions> = async (
     maxEventLoopUtilization: 0.98,
     message: 'The robots have taken over! Our server pooped itself.',
     retryAfter: 500,
-  };
-
-  // @ts-ignore
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions, no-sequences
-  (healthCheckConfig.healthCheckInterval = process.env.DEBUG ? 30000 : 500),
-    // @ts-ignore
-    (healthCheckConfig.healthCheck = async (
-      fastifyInstance: FastifyInstance
-    ) => {
+    healthCheckInterval: 500,
+    healthCheck: async (fastifyInstance: FastifyInstance) => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        (await fastifyInstance.redis.ping()) === 'PONG';
+      } catch (_e) {
+        return false;
+      }
       try {
         await fastifyInstance.prisma.$queryRaw`SELECT 1`;
       } catch (_e) {
         return false;
+      } finally {
+        // eslint-disable-next-line no-unsafe-finally
+        return true;
       }
-      try {
-        return (await fastifyInstance.redis.ping()) === 'PONG';
-      } catch (_e) {
-        return false;
-      }
-    });
-
-  // More in depth health check of our DB and Cache.
-  await app.register(require('@fastify/under-pressure'), healthCheckConfig);
+    },
+  };
+  if (process.env.NODE_ENV !== 'test') {
+    // More in depth health check of our DB and Cache.
+    await app.register(require('@fastify/under-pressure'), healthCheckConfig);
+  }
   /*
 Since fastify-print-routes uses an onRoute hook, you have to either:
 
@@ -221,7 +164,6 @@ if (process.env.NODE_APP_INSTANCE) {
   // @ts-ignore
   process.send('ready');
 }
-
 export default fastify;
 export { fastify, options };
 // When using .decorate you have to specify added properties for Typescript
@@ -230,5 +172,6 @@ declare module 'fastify' {
     someSupport(): string;
     prisma: PrismaClient;
     redis: Redis;
+    io: Server;
   }
 }

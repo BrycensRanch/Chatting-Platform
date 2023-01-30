@@ -3,25 +3,22 @@
 FROM timbru31/node-alpine-git:hydrogen AS init 
 # update packages, to reduce risk of vulnerabilities
 RUN apk update && apk upgrade
-RUN apk add --no-cache bash
+RUN apk add bash
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+RUN apk add libc6-compat
 
 # RUN apk cache clean
 
 # set a non privileged user to use when running this image
 RUN addgroup -S nodejs && adduser -S nodejs -G nodejs
+SHELL ["bash", "-c"] 
 
 # set right (secure) folder permissions
 RUN mkdir -p /home/nodejs/app/node_modules && chown -R nodejs:nodejs /home/nodejs/app
 
-RUN mkdir -p /home/nodejs/.npm-global
-RUN chown -R nodejs:nodejs /home/nodejs/.npm-global
-
-# Install dependencies as needed and setup NPM packages paths idk
-# I lost track of what the Dockerfile does anymore. 
-# FROM timbru31/node-alpine-git:hydrogen AS deps
-
+RUN wget -qO /bin/pnpm "https://github.com/pnpm/pnpm/releases/latest/download/pnpm-linuxstatic-x64" && chmod +x /bin/pnpm
+RUN mkdir -p /home/nodejs/.pnpm-store && chown -R nodejs:nodejs /home/nodejs/.pnpm-store
+RUN pnpm config set store-dir /home/nodejs/.pnpm-store
 
 USER nodejs
 WORKDIR /home/nodejs/app
@@ -29,24 +26,20 @@ WORKDIR /home/nodejs/app
 # COPY --chown=nodejs:nodejs . . 
 
 ENV NODE_ENV=production
-ENV PATH=$PATH:/home/nodejs/.npm-global/bin 
-
-ENV NPM_CONFIG_PREFIX=/home/nodejs/.npm-global
-ENV NPM_CONFIG_LOGLEVEL=error
 
 # Install dependencies based on the preferred package manager
 COPY --chown=nodejs:nodejs package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci --omit=dev --ignore-scripts; \
-  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
+  elif [ -f pnpm-lock.yaml ]; then pnpm i --prod; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
 #RUN npm i -g next
 
 # Work in progress, this can cause mismatched global dependencies
-RUN npm i -g typescript pm2 rimraf
+RUN pnpm i -g pm2 rimraf
 
 # Rebuild the source code only when needed
 # FROM timbru31/node-alpine-git:hydrogen AS builder
@@ -101,4 +94,4 @@ COPY --chown=nodejs:nodejs pm2.config.js .
 COPY --chown=nodejs:nodejs server.js .
 
 # Using Containers? We got your back. Start today using pm2-runtime, a perfect companion to get the most out of Node.js in production environment.
-CMD ["npm", "run", "pm2"]
+CMD ["pnpm", "pm2"]
