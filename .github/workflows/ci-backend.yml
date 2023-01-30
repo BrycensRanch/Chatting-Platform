@@ -59,7 +59,7 @@ jobs:
       #   env:
       #     PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-backend?schema=public
 
-      - name: Build Frontend
+      - name: Build Backend
         working-directory: backend
         run: |
           pnpm build
