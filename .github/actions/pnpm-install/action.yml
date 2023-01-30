@@ -21,7 +21,7 @@ runs:
         id: pnpm-install
         with:
           version: 7
-          run_install: false
+          run_install: true
 
       # - name: Get pnpm store directory
       #   id: pnpm-cache
@@ -37,6 +37,6 @@ runs:
       #     restore-keys: |
       #       ${{ runner.os }}-pnpm-store-
 
-      - name: Install dependencies
-        shell: bash
-        run: pnpm install-all:ci
+      # - name: Install dependencies
+      #   shell: bash
+      #   run: pnpm install-all:ci
