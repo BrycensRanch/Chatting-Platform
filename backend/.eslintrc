@@ -1,0 +1,62 @@
+{
+  // Configuration for JavaScript files
+  "plugins": ["tap"],
+  "extends": [
+    "airbnb-base",
+    "plugin:prettier/recommended",
+    "plugin:tap/recommended"
+  ],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true,
+        "endOfLine": "auto"
+      }
+    ]
+  },
+  "overrides": [
+    // Configuration for TypeScript files
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "plugins": ["@typescript-eslint", "unused-imports", "simple-import-sort"],
+      "extends": [
+        "airbnb-typescript",
+        "plugin:prettier/recommended",
+        "plugin:tap/recommended"
+      ],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "rules": {
+        "prettier/prettier": [
+          "error",
+          {
+            "singleQuote": true,
+            "endOfLine": "auto"
+          }
+        ],
+        "@typescript-eslint/comma-dangle": "off", // Avoid conflict rule between Eslint and Prettier
+        "no-void": "off", // Shut up.
+        "react/jsx-filename-extension": "off", // Shut up.
+        "global-require": "off",
+        "@typescript-eslint/consistent-type-imports": "error", // Ensure `import type` is used when it's necessary
+        "@typescript-eslint/no-shadow": "off", // Shut up.
+        "import/prefer-default-export": "off", // Named export is easier to refactor automatically
+        "simple-import-sort/imports": "error", // Import configuration for `eslint-plugin-simple-import-sort`
+        "simple-import-sort/exports": "error", // Export configuration for `eslint-plugin-simple-import-sort`
+        "@typescript-eslint/no-unused-vars": "off",
+        "unused-imports/no-unused-imports": "error",
+        "unused-imports/no-unused-vars": [
+          "error",
+          { "argsIgnorePattern": "^_" }
+        ]
+      }
+    },
+    // Configuration for testing
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "plugins": ["tap"]
+    }
+  ]
+}

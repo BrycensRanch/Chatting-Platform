@@ -1,0 +1,81 @@
+name: CI-backend
+
+on:
+  push:
+    branches:
+      - "*"
+    # Only consider those paths to trigger the action
+    paths:
+      - 'backend/**'
+      - '.github/**'
+
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    # Only consider those paths to trigger the action
+    paths:
+      - 'backend/**'
+      - '.github/**'
+
+jobs:
+  build-and-test:
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js 
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: 📥 Monorepo install all deps & pnpm
+        uses: ./.github/actions/pnpm-install
+
+      # see https://github.com/vercel/next.js/pull/27362
+      - name: Restore backend build from cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/backend/dist
+            ${{ github.workspace }}/**/tsconfig.tsbuildinfo
+          key: ${{ runner.os }}-backend-${{ hashFiles('**/pnpm.lock') }}-${{ hashFiles('backend/src/**.[jt]s?', 'backend/src/**.json') }}
+          restore-keys: |
+            ${{ runner.os }}-backend-${{ hashFiles('**/pnpm.lock') }}-${{ hashFiles('backend/src/**.[jt]s?', 'backend/src/**.json') }}
+
+      # - name: Create and seed test database
+      #   working-directory: backend
+      #   run: |
+      #     pnpm exec prisma db push
+      #     pnpm exec prisma db seed
+      #   env:
+      #     PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-backend?schema=public
+
+      - name: Build Backend
+        working-directory: backend
+        run: |
+          pnpm build
+      
+      - name: 🔢 Run Unit Tests
+        working-directory: backend
+        continue-on-error: true
+        run: |
+          pnpm add coveralls --save-dev && pnpm test
+        env: 
+           COVERALLS_REPO_TOKEN: uAAFMrMGWR2DpgN8GSupdDSFWJZTAuIZV
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: uAAFMrMGWR2DpgN8GSupdDSFWJZTAuIZV
+      # - name: Start docker compose
+      #   run: pnpm backend-start
+      # - name: 🧪 Run Cypress Tests
+      #   uses: cypress-io/github-action@v5

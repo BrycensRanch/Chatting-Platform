@@ -1,0 +1,67 @@
+# https://github.com/smartiniOnGitHub/fastify-example/blob/master/.dockerignore
+.DS_Store
+
+.git
+.gitignore
+
+.settings
+.classpath
+.project
+.cache*
+.metadata
+.worksheet
+RemoteSystemsTempFiles/
+Servers/
+
+.gradle
+bin/
+
+*.log
+*.log*
+*~*
+*.bak
+*.tmp
+*.temp
+Thumbs.db
+
+dev.db
+
+PostgresData
+dockerApp
+DockerRedisCache
+backupPostgres
+.nyc_output
+/cypress
+
+
+_old
+# /*.min.js*
+
+/.vscode
+# AYE AYE WE NEED THAT MY MAN
+# /*.test.js*
+# /*.test.ts*
+tmp/
+temp/
+/target/
+/target-eclipse/
+
+local.properties
+
+# *.class
+
+# node_modules
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.nyc_output
+/coverage
+
+.dockerignore
+Dockerfile
+Dockerfile*.*
+Jenkinsfile
+Jenkinsfile*.*
+/jenkins

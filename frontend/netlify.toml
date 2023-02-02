@@ -1,0 +1,11 @@
+[build]
+  publish = "out"
+  command = "npm run build"
+
+# Netlify isn't production, however, it's used for PRs.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_ENV = "production"
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"

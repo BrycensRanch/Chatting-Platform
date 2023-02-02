@@ -1,0 +1,66 @@
+name: Hodolint (Dockerfile)
+
+on:
+  push:
+    branches:
+      - "*"
+    paths:
+      - .github/workflows/hodolint.yml
+      - .hadolint.yaml
+      - "**/Dockerfile"
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - .github/workflows/hodolint.yml
+      - .hadolint.yaml
+      - "**/Dockerfile"
+
+jobs:
+  hadolint:
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get changed Dockerfiles
+        id: changed-files-excluded
+        uses: tj-actions/changed-files@v35
+        with:
+          files: |
+            **/Dockerfile
+          separator: " "
+
+      - name: Run linting on Dockerfile(s) if changed
+        uses: jbergstroem/hadolint-gh-action@v1
+        id: hadolint
+        if: steps.changed-files-excluded.outputs.any_changed == 'true'
+        with:
+          output_format: checkstyle
+          dockerfile: "${{ steps.changed-files.outputs.other_changed_files }}"
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const output = `
+            #### Hadolint: \`${{ steps.hadolint.outcome }}\`
+            \`\`\`
+            ${process.env.HADOLINT_RESULTS}
+            \`\`\`
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })

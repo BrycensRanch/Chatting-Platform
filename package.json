@@ -1,0 +1,44 @@
+{
+  "name": "chatting-platform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky install",
+    "start": "concurrently -c \"auto\" \"npm:start:frontend\" \"npm:start:backend\"",
+    "dev": "concurrently -c \"auto\" \"npm:dev:frontend\" \"npm:dev:backend\"",
+    "install-all": "pnpm install && cd frontend && pnpm install && cd ../backend && pnpm install",
+    "install-all:ci": "pnpm install && cd frontend && pnpm install  && cd ../backend && pnpm install ",
+    "update-all": "pnpm update && cd frontend && pnpm update && cd ../backend && pnpm update",
+    "install-all:npm": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "docker-start": "docker compose up --build",
+    "frontend-start": "cd frontend && npm run cleanbuild  && cd .. && docker compose up chatfrontend --detach --build",
+    "backend-start": "cd backend && npm run cleanbuild  && cd .. && docker compose up chatbackend --detach --build",
+    "dev:frontend": "npm run dev -w=frontend",
+    "dev:backend": "npm run dev -w=backend",
+    "start:frontend": "npm run start -w=frontend",
+    "start:backend": "npm run start -w=backend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "^17.4.2",
+    "@commitlint/config-conventional": "^17.4.2",
+    "@commitlint/cz-commitlint": "^17.4.2",
+    "@testing-library/jest-dom": "^5.16.5",
+    "commitizen": "^4.3.0",
+    "commitlint-config-monorepo": "^2.0.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.0",
+    "recursive-readdir-synchronous": "^0.0.4"
+  },
+  "workspaces": [
+    "frontend/*",
+    "backend/*"
+  ],
+  "engines": {
+    "node": ">=14",
+    "pnpm": ">=7"
+  }
+}
