@@ -69,7 +69,7 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-simple-import-sort": "^8.0.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-tap": "^1.2.1",
     "eslint-plugin-unused-imports": "^2.0.0",
     "get-port-please": "^3.0.1",
