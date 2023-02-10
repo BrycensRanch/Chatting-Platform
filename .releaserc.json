@@ -13,7 +13,14 @@
     "@semantic-release/changelog",
     "@semantic-release/git",
     {
-      "assets": ["package.json", "**/package.json"]
-    }
+      "assets": ["**/pnpm-lock.yaml", "**/package.json"]
+    },
+    [
+      '@semantic-release/github',
+      {
+        assets: [],
+        releasedLabels: true,
+      },
+    ],
   ]
 }
