@@ -25,7 +25,6 @@ const start = async () => {
     );
   }
 
-  console.log(process.env);
   const server = fastify({
     logger: {
       level: 'info',
