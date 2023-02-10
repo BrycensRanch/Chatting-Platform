@@ -47,7 +47,7 @@ jobs:
     steps:
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.11.0
-        
+
       - uses: actions/checkout@v3
 
       - name: Setup Node.js 
@@ -58,11 +58,11 @@ jobs:
       - name: 📥 Monorepo install all deps & pnpm
         uses: ./.github/actions/pnpm-install
 
-      - name: Install Cypress
-        uses: cypress-io/github-action@v5
-        with:
-          # just perform install
-          runTests: false
+      # - name: Install Cypress
+      #   uses: cypress-io/github-action@v5
+      #   with:
+      #     # just perform install
+      #     runTests: false
 
       # see https://github.com/vercel/next.js/pull/27362
       - name: Restore frontend build from cache
@@ -105,19 +105,33 @@ jobs:
           mv .env.example .env
       # - name: Start docker compose
       #   run: pnpm frontend-start
-      - name: 🧪 Run E2E Tests (Cypress)
+      # - name: 🧪 Run E2E Tests (Cypress)
+      #   if: ${{ !env.ACT }} 
+      #   uses: cypress-io/github-action@v5
+      #   with:
+      #     working-directory: ./frontend
+      #     # just for full picture after installing Cypress
+      #     # print information about detected browsers, etc
+      #     # see https://on.cypress.io/command-line#cypress-info
+      #     build: pnpm build
+      #     start: pnpm e2e:headless
+      #     wait-on: 'http://localhost:3000'
+      #     install: false
+      - name: 🧪 Run E2E Tests (Cypress bash)
         if: ${{ !env.ACT }} 
-        uses: cypress-io/github-action@v5
-        with:
-          working-directory: ./frontend
+        working-directory: ./frontend
+        run: |
+          pnpm e2e:headless
+        # uses: cypress-io/github-action@v5
+        # with:
+        #   working-directory: ./frontend
           # just for full picture after installing Cypress
           # print information about detected browsers, etc
           # see https://on.cypress.io/command-line#cypress-info
-          build: pnpm build
-          start: pnpm e2e:headless
-          wait-on: 'http://localhost:3000'
-          install: false
-
+          # build: pnpm build
+          # start: pnpm e2e:headless
+          # wait-on: 'http://localhost:3000'
+          # install: false
       - uses: actions/upload-artifact@v3
         if: failure()
         with:
