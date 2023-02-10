@@ -102,7 +102,11 @@ jobs:
         env: 
            COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
            NEXTJS_SENTRY_UPLOAD_DRY_RUN: true
-
+  
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       # - uses: codecov/codecov-action@v3
       #   with:
       #     flags: unittests-backend # optional
