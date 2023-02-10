@@ -80,11 +80,14 @@ jobs:
         if: ${{ !env.ACT }} 
         uses: cypress-io/github-action@v5
         with:
-          working-directory: frontend
+          working-directory: ./frontend
           # just for full picture after installing Cypress
           # print information about detected browsers, etc
           # see https://on.cypress.io/command-line#cypress-info
-          build: npx cypress info
+          build: pnpm build
+          start: pnpm dev:cypress
+          wait-on: 'http://localhost:3000'
+          install: false
 
       - uses: actions/upload-artifact@v3
         if: failure()
