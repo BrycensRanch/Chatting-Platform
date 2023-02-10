@@ -55,6 +55,12 @@ jobs:
       - name: 📥 Monorepo install all deps & pnpm
         uses: ./.github/actions/pnpm-install
 
+      - name: Install Cypress
+        uses: cypress-io/github-action@v5
+        with:
+          # just perform install
+          runTests: false
+
       # see https://github.com/vercel/next.js/pull/27362
       - name: Restore frontend build from cache
         uses: actions/cache@v3
@@ -107,7 +113,7 @@ jobs:
           build: pnpm build
           start: pnpm e2e:headless
           wait-on: 'http://localhost:3000'
-          install: true
+          install: false
 
       - uses: actions/upload-artifact@v3
         if: failure()
