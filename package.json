@@ -2,6 +2,7 @@
   "name": "chatting-platform",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "start": "pnpm docker-start-other-services && concurrently -c \"auto\" \"npm:start:frontend\" \"npm:start:backend\"",
