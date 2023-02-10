@@ -109,6 +109,10 @@ jobs:
       #     fail_ci_if_error: true # optional (default = false)
       #     verbose: false # optional (default = false)
       #     working-directory: backend
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }} 
       - uses: actions/upload-artifact@v3
         if: always()
         with:
