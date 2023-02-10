@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.0.1...v1.0.2) (2023-02-10)
+
+
+### Performance Improvements
+
+* **repo:** optimize images ([#18](https://github.com/BrycensRanch/Chatting-Platform/issues/18)) ([c2752ae](https://github.com/BrycensRanch/Chatting-Platform/commit/c2752aee4a1d3fa1655f4dc011a91bf760c89b2a))
+
 ## [1.0.1](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.0.0...v1.0.1) (2023-02-10)
 
 
