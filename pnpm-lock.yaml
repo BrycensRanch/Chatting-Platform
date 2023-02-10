@@ -12,6 +12,7 @@ importers:
       commitizen: ^4.3.0
       commitlint-config-monorepo: ^2.0.2
       concurrently: ^7.6.0
+      execa: ^6.1.0
       husky: ^8.0.3
       ignore-walk: ^6.0.1
       lint-staged: ^13.1.1
@@ -27,6 +28,7 @@ importers:
       commitizen: 4.3.0
       commitlint-config-monorepo: 2.0.2
       concurrently: 7.6.0
+      execa: 6.1.0
       husky: 8.0.3
       ignore-walk: 6.0.1
       lint-staged: 13.1.1
@@ -137,6 +139,7 @@ importers:
       '@cypress/browserify-preprocessor': ^3.0.2
       '@cypress/code-coverage': ^3.10.0
       '@next/bundle-analyzer': ^13.1.6
+      '@next/env': ^13.1.6
       '@percy/cli': ^1.18.0
       '@percy/cypress': ^3.1.2
       '@sentry/nextjs': ^7.36.0
@@ -223,6 +226,7 @@ importers:
       '@cypress/browserify-preprocessor': 3.0.2
       '@cypress/code-coverage': 3.10.0_bao4zmketlstf37bbssx5ee4n4
       '@next/bundle-analyzer': 13.1.6
+      '@next/env': 13.1.6
       '@percy/cli': 1.18.0
       '@percy/cypress': 3.1.2_cypress@12.5.1
       '@testing-library/cypress': 9.0.0_cypress@12.5.1
@@ -2381,7 +2385,6 @@ packages:
 
   /@next/env/13.1.6:
     resolution: {integrity: sha512-s+W9Fdqh5MFk6ECrbnVmmAOwxKQuhGMT7xXHrkYIBMBcTiOqNWhv5KbJIboKR5STXxNXl32hllnvKaffzFaWQg==}
-    dev: false
 
   /@next/eslint-plugin-next/13.1.6:
     resolution: {integrity: sha512-o7cauUYsXjzSJkay8wKjpKJf2uLzlggCsGUkPu3lP09Pv97jYlekTC20KJrjQKmSv5DXV0R/uks2ZXhqjNkqAw==}
@@ -3425,7 +3428,6 @@ packages:
 
   /@types/node/18.13.0:
     resolution: {integrity: sha512-gC3TazRzGoOnoKAhUx+Q0t8S9Tzs74z7m0ipwGpSqQrleP14hKxP4/JUeEQcD3W1/aIpnWl8pHowI7WokuZpXg==}
-    dev: true
 
   /@types/normalize-package-data/2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -8885,7 +8887,7 @@ packages:
       jest-snapshot: 29.4.1
       jest-util: 29.4.2
       p-limit: 3.1.0
-      pretty-format: 29.4.1
+      pretty-format: 29.4.2
       slash: 3.0.0
       stack-utils: 2.0.6
     transitivePeerDependencies:
@@ -8952,7 +8954,7 @@ packages:
       jest-validate: 29.4.1
       micromatch: 4.0.5
       parse-json: 5.2.0
-      pretty-format: 29.4.1
+      pretty-format: 29.4.2
       slash: 3.0.0
       strip-json-comments: 3.1.1
       ts-node: 10.9.1_qqdszkrtcshgbphghj7vnvrrby
@@ -8967,7 +8969,7 @@ packages:
       chalk: 4.1.2
       diff-sequences: 29.3.1
       jest-get-type: 29.2.0
-      pretty-format: 29.4.1
+      pretty-format: 29.4.2
     dev: true
 
   /jest-diff/29.4.2:
@@ -8995,7 +8997,7 @@ packages:
       chalk: 4.1.2
       jest-get-type: 29.2.0
       jest-util: 29.4.2
-      pretty-format: 29.4.1
+      pretty-format: 29.4.2
     dev: true
 
   /jest-environment-jsdom/29.4.1:
@@ -9067,7 +9069,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       jest-get-type: 29.2.0
-      pretty-format: 29.4.1
+      pretty-format: 29.4.2
     dev: true
 
   /jest-matcher-utils/29.4.1:
@@ -9077,7 +9079,7 @@ packages:
       chalk: 4.1.2
       jest-diff: 29.4.1
       jest-get-type: 29.2.0
-      pretty-format: 29.4.1
+      pretty-format: 29.4.2
     dev: true
 
   /jest-matcher-utils/29.4.2:
@@ -9100,7 +9102,7 @@ packages:
       chalk: 4.1.2
       graceful-fs: 4.2.10
       micromatch: 4.0.5
-      pretty-format: 29.4.1
+      pretty-format: 29.4.2
       slash: 3.0.0
       stack-utils: 2.0.6
     dev: true
@@ -9267,7 +9269,7 @@ packages:
       jest-message-util: 29.4.1
       jest-util: 29.4.2
       natural-compare: 1.4.0
-      pretty-format: 29.4.1
+      pretty-format: 29.4.2
       semver: 7.3.8
     transitivePeerDependencies:
       - supports-color
@@ -9306,7 +9308,7 @@ packages:
       chalk: 4.1.2
       jest-get-type: 29.2.0
       leven: 3.1.0
-      pretty-format: 29.4.1
+      pretty-format: 29.4.2
     dev: true
 
   /jest-watcher/29.4.1:
@@ -9327,7 +9329,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.11.19
+      '@types/node': 18.13.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 

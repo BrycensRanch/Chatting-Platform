@@ -30,6 +30,9 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+        
       - uses: actions/checkout@v3
 
       - name: Setup Node.js 
@@ -46,10 +49,12 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/backend/dist
+            ~/.cache
+            ${{ github.workspace }}/.cache
             ${{ github.workspace }}/**/tsconfig.tsbuildinfo
           key: ${{ runner.os }}-backend-${{ hashFiles('**/pnpm.lock') }}-${{ hashFiles('backend/src/**.[jt]s?', 'backend/src/**.json') }}
           restore-keys: |
-            ${{ runner.os }}-backend-${{ hashFiles('**/pnpm.lock') }}-${{ hashFiles('backend/src/**.[jt]s?', 'backend/src/**.json') }}
+            ${{ runner.os }}-backend-${{ hashFiles('**/pnpm.lock') }}-
 
       # - name: Create and seed test database
       #   working-directory: backend
@@ -67,6 +72,10 @@ jobs:
           # PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-frontend?schema=public
           NEXTJS_SENTRY_UPLOAD_DRY_RUN: true
           NODE_ENV: production
+          REDIS_PASSWORD: ${{ vars.GITHUB_SHA }}
+          DB_PASSWORD: ${{ vars.GITHUB_SHA }} # totally secure
+          REDIS_URL: "redis://:${REDIS_PASSWORD}@host.docker.internal:6379"
+
       # - name: Install Codecov Uploader
       #   working-directory: backend
       #   run: |
