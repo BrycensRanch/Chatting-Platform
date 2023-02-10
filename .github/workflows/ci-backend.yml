@@ -69,6 +69,10 @@ jobs:
           # PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-frontend?schema=public
           NEXTJS_SENTRY_UPLOAD_DRY_RUN: true
           NODE_ENV: production
+          REDIS_PASSWORD: ${{ vars.GITHUB_SHA }}
+          DB_PASSWORD: ${{ vars.GITHUB_SHA }} # totally secure
+          REDIS_URL: "redis://:${REDIS_PASSWORD}@host.docker.internal:6379"
+
       # - name: Install Codecov Uploader
       #   working-directory: backend
       #   run: |
