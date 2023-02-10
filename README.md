@@ -29,6 +29,7 @@
   <a aria-label="Licence" href="https://github.com/BrycensRanch/Chatting-Platform/blob/main/LICENSE">
     <img alt="Licence" src="https://img.shields.io/github/license/BrycensRanch/Chatting-Platform?style=for-the-badge&labelColor=000000" />
   </a>
+  <img alt=“CodeFactor Grade” src=“https://img.shields.io/codefactor/grade/github/BrycensRanch/Chatting-Platform?style=for-the-badge”>
 </p>
 
 ## Project Goals
