@@ -47,6 +47,7 @@ jobs:
           path: |
             ${{ github.workspace }}/frontend/.next/cache
             ${{ github.workspace }}/.cache
+            /home/runner/.cache/Cypress
             ${{ github.workspace }}/**/tsconfig.tsbuildinfo
           key: ${{ runner.os }}-frontend-${{ hashFiles('**/pnpm.lock') }}-${{ hashFiles('frontend/src/**.[jt]sx?', 'frontend/src/**.json') }}
           restore-keys: |
