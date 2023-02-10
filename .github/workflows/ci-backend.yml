@@ -46,10 +46,12 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/backend/dist
+            ~/.cache
+            ${{ github.workspace }}/.cache
             ${{ github.workspace }}/**/tsconfig.tsbuildinfo
           key: ${{ runner.os }}-backend-${{ hashFiles('**/pnpm.lock') }}-${{ hashFiles('backend/src/**.[jt]s?', 'backend/src/**.json') }}
           restore-keys: |
-            ${{ runner.os }}-backend-${{ hashFiles('**/pnpm.lock') }}-${{ hashFiles('backend/src/**.[jt]s?', 'backend/src/**.json') }}
+            ${{ runner.os }}-backend-${{ hashFiles('**/pnpm.lock') }}-
 
       # - name: Create and seed test database
       #   working-directory: backend
