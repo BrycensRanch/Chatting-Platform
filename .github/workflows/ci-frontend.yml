@@ -79,6 +79,12 @@ jobs:
       - name: 🧪 Run E2E Tests (Cypress)
         if: ${{ !env.ACT }} 
         uses: cypress-io/github-action@v5
+        with:
+          working-directory: frontend
+          # just for full picture after installing Cypress
+          # print information about detected browsers, etc
+          # see https://on.cypress.io/command-line#cypress-info
+          build: npx cypress info
 
       - uses: actions/upload-artifact@v3
         if: failure()
