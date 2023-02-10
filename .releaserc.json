@@ -16,7 +16,7 @@
       "assets": ["**/pnpm-lock.yaml", "**/package.json"]
     },
     [
-      '@semantic-release/github',
+      "@semantic-release/github",
       {
         assets: [],
         releasedLabels: true,
