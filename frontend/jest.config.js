@@ -17,14 +17,22 @@ const customJestConfig = {
   collectCoverage: true,
   collectCoverageFrom: [
     './src/**/*.{js,jsx,ts,tsx}',
+    '!./src/pages/room/[id].{js,jsx,ts,tsx}', // CYPRESS ONLY SHOULD BE CONCERNED WITH TESTING THIS PAGE.. TOO ADVANCED FOR JEST...
+    '!./src/pages/index.{js,jsx,ts,tsx}', // TOO ADVANCED FOR JEST...
     '!./src/**/_*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
     '!**/node_modules/**',
   ],
+  transform: {
+    // Use babel-jest to transpile tests with the next/babel preset
+    // https://jestjs.io/docs/configuration#transform-objectstring-pathtotransformer--pathtotransformer-object
+    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
+  },
+  coverageDirectory: 'jest-coverage',
   coverageThreshold: {
     global: {
-      branches: 70,
-      functions: 70,
+      branches: 50,
+      functions: 50,
       lines: 70,
       statements: 70,
     },

@@ -11,7 +11,6 @@
 - Testing Library & Jest (Unit testing)
 - Cypress (End to End testing)
 
-
 ### Features
 
 Developer experience first:
@@ -59,7 +58,7 @@ cd frontend
 Then, you can run locally in development mode with live reload:
 
 ```shell
-npm run dev
+pnpm dev
 ```
 
 Open <http://localhost:3000> with your favorite browser to see your project.
@@ -71,10 +70,13 @@ Open <http://localhost:3000> with your favorite browser to see your project.
 ├── .husky                          # Husky configuration
 ├── .vscode                         # VSCode configuration
 ├── public                          # Public assets folder
+├── cypress                         # Cypress End to End testing
 ├── src
-│   ├── layouts                     # Layouts components
+│   ├── hooks                       # Hooks for pages
+│   ├── components                  # Regular components
+│   ├── layouts                     # Layout components
 │   ├── pages                       # Next JS Pages
-│   ├── pages.test                  # Next JS Pages tests (this avoid test to treated as a Next.js pages)
+│   ├── pages.test                  # Next JS Pages tests (Jest tests)
 │   ├── styles                      # Styles folder
 │   ├── templates                   # Default template
 │   └── utils                       # Utility functions
@@ -86,7 +88,7 @@ Open <http://localhost:3000> with your favorite browser to see your project.
 
 You can easily configure Next js Boilerplate. Please change the following file:
 
-- `public/apple-touch-icon.png`, `public/favicon.ico`, `public/favicon-16x16.png` and `public/favicon-32x32.png`: your website favicon, you can generate from https://favicon.io/favicon-converter/
+- `public/apple-touch-icon.png`, `public/favicon.ico`, `public/favicon-16x16.png` and `public/favicon-32x32.png`: your website favicon, you can generate from <https://favicon.io/favicon-converter/>
 - `src/styles/global.css`: your CSS file using Tailwind CSS
 - `src/utils/AppConfig.ts`: configuration file
 - `src/templates/Main.tsx`: default theme
@@ -96,8 +98,8 @@ You can easily configure Next js Boilerplate. Please change the following file:
 You can see the results locally in production mode with:
 
 ```shell
-$ npm run build
-$ npm run start
+pnpm build
+pnpm start
 ```
 
 The generated HTML and CSS files are minified (built-in feature from Next js). It will also removed unused CSS from [Tailwind CSS](https://tailwindcss.com).
@@ -105,15 +107,17 @@ The generated HTML and CSS files are minified (built-in feature from Next js). I
 You can create an optimized production build with:
 
 ```shell
-npm run build-prod
+pnpm build-prod
 ```
+
+[![Deploy on Netlfiy](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/BrycensRanch/Chatting-Platform)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/BrycensRanch/Chatting-Platform)
 
 Now, your blog is ready to be deployed. All generated files are located at `out` folder, which you can deploy with any hosting service.
 
 ### Testing
 
 All tests are colocated with the source code inside the same directory. So, it makes it easier to find them. Unfortunately, it is not possible with the `pages` folder which is used by Next.js for routing. So, what is why we have a `pages.test` folder to write tests from files located in `pages` folder.
-
 
 ### VSCode information (optional)
 
@@ -201,12 +205,12 @@ While I'd love to use Jest as our test framework for consistency, this type of c
 
 In the project directory, you can run:
 
-### `npm run dev`
+### `pnpm dev`
 
 To start the app in dev mode.\
 Open [http://localhost:8000](http://localhost:8000) to view it in the browser.
 
-### `npm run build`
+### `pnpm build`
 
 To build the backend server
 
@@ -214,14 +218,13 @@ To build the backend server
 
 For production mode
 
-### `npm run test`
+### `pnpm test`
 
 Run the test cases.
 
 ## Learn More
 
 To learn Fastify, check out the [Fastify documentation](https://www.fastify.io/docs/latest/).
-
 
 ### Contributions
 
@@ -232,4 +235,3 @@ Everyone is welcome to contribute to this project. Feel free to open an issue if
 Licensed under the MIT License, Copyright © 2023
 
 See [LICENSE](../LICENSE) for more information.
-

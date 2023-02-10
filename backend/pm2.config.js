@@ -7,7 +7,9 @@ module.exports = {
     // Main Application
     {
       name: 'ChatBackend',
-      script: './dist/app.js',
+      script: process[Symbol.for('ts-node.register.instance')]
+        ? 'app.ts'
+        : './dist/app.js',
       instances: 2,
       exec_mode: 'cluster',
       exp_backoff_restart_delay: 100,

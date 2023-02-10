@@ -1,0 +1,29 @@
+name: Release
+on:
+  repository_dispatch:
+    types: [semantic-release]
+  workflow_run:
+    workflows: [CI-backend, CI-frontend]
+    branches: [master, beta, alpha]
+    types: 
+      - completed
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+      # - name: 📥 Monorepo install all deps & pnpm
+      #   uses: ./.github/actions/pnpm-install
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_URL: "https://api.github.com/"
+        run: npx --legacy-peer-deps -p @semantic-release/changelog -p @semantic-release/git -p semantic-release semantic-release

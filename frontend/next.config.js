@@ -3,6 +3,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 // all of these are the default values...
+require('dotenv-mono').load();
+
 require(`dotenv-defaults`).config({
   path: './.env',
   encoding: 'utf8',
@@ -10,8 +12,6 @@ require(`dotenv-defaults`).config({
 });
 
 const { ConfigBuilder } = require('next-recompose-plugins');
-const CompressionPlugin = require('compression-webpack-plugin');
-const zlib = require('zlib');
 
 // const BrotliPlugin = require('brotli-webpack-plugin');
 
@@ -23,8 +23,12 @@ const zlib = require('zlib');
 const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self';
-  child-src brycens.software;
-  style-src 'self' brycens.software;
+  child-src brycens.tech ${
+    process.env.BACKEND_SERVER || 'http://localhost:8000'
+  };
+  style-src 'self' brycens.tech ${
+    process.env.BACKEND_SERVER || 'http://localhost:8000'
+  };
   font-src 'self';  
 `;
 
@@ -69,7 +73,6 @@ const BuildingConfig = ConfigBuilder.defineConfig({
   poweredByHeader: false,
   // I'm not entirely sure what this does, but I'm not gonna touch it.
   trailingSlash: true,
-  compress: process.env.NODE_ENV === 'development',
   images: {
     formats: ['image/avif', 'image/webp'],
   },
@@ -82,6 +85,25 @@ const BuildingConfig = ConfigBuilder.defineConfig({
     removeConsole: process.env.NODE_ENV === 'production',
     exclude: ['error'],
   },
+  experimental: {
+    swcPlugins: [
+      [
+        'swc-plugin-coverage-instrument',
+        {
+          produceSourceMap: true,
+          preserveComments: true,
+          instrumentLog: {
+            // Currently there aren't logs other than spans.
+            // Enabling >= info can display span traces.
+            level: 'trace',
+            // Emits spans along with any logs
+            // Only effective if level sets higher than info.
+            enableTrace: true,
+          },
+        },
+      ],
+    ],
+  },
   // Minify files in production. Shouldn't effect Sentry error logging.
   // Requires testing
   swcMinify: process.env.NODE_ENV === 'production',
@@ -92,7 +114,7 @@ const BuildingConfig = ConfigBuilder.defineConfig({
   // Helps to identify unsafe lifecycles, legacy API usage, and a number of other features.
   reactStrictMode: true,
   // Copies only the necessary files for a production deployment including select files in node_modules.
-  output: 'standalone',
+  // output: 'standalone',
   //  Use React while developing and only replace it with Preact in production.
   async headers() {
     return [
@@ -103,6 +125,8 @@ const BuildingConfig = ConfigBuilder.defineConfig({
       },
     ];
   },
+  env: process.env,
+
   sentry: {
     // Use `hidden-source-map` rather than `source-map` as the Webpack `devtool`
     // for client-side builds. (This will be the default starting in
@@ -112,10 +136,6 @@ const BuildingConfig = ConfigBuilder.defineConfig({
     // for more information.
     hideSourceMaps: true,
   },
-}).applyPlugin((phase, args, options) => {
-  return require('next-pwa')({
-    dest: 'public',
-  })(config);
 });
 if (process.env.ANALYZE === 'true') {
   BuildingConfig.applyPlugin((phase, args, config) => {
@@ -141,44 +161,8 @@ if (process.env.NODE_ENV === 'production') {
       // https://github.com/getsentry/sentry-webpack-plugin#options.
     })(config);
   });
-  BuildingConfig.applyPlugin((phase, args, config) => {
-    return require('next-plugin-preact')(config);
-  });
-  BuildingConfig.applyPlugin((phase, args, config) => {
-    // eslint-disable-next-line no-unused-vars
-    config.webpack = (webpackConfig, { dev, isServer }) => {
-      // GZIP
-      webpackConfig.plugins.push(
-        new CompressionPlugin({
-          filename: '[path][base].gz',
-          algorithm: 'gzip',
-          test: /\.js$|\.css$|\.html$/,
-          threshold: 10240,
-          minRatio: 0.8,
-          deleteOriginalAssets: false,
-        })
-      );
-      webpackConfig.plugins.push(
-        new CompressionPlugin({
-          filename: '[path][base].br',
-          algorithm: 'brotliCompress',
-          test: /\.(js|css|html|svg)$/,
-          compressionOptions: {
-            params: {
-              [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
-            },
-          },
-          threshold: 10240,
-          minRatio: 0.8,
-          deleteOriginalAssets: false,
-        })
-      );
-
-      // Brotli ?
-
-      return webpackConfig;
-    };
-  });
 }
 BuildingConfig.build();
+
+BuildingConfig.configFactory = undefined;
 module.exports = BuildingConfig;

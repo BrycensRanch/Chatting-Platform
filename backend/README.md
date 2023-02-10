@@ -1,5 +1,8 @@
 # Backend (Fastify)
 
+[![Deploy to Zeet](https://deploy.zeet.co/fastify.svg)](https://deploy.zeet.co/?url=https://github.com/BrycensRanch/Chatting-Platform)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https%3A%2F%2Fgithub.com%2FBrycensRanch%2FChatting-Platform&plugins=redis)
+
 ## Notes
 
 This project may be overloaded to the brim with dependencies, but this is the backend. I utilized these dependencies to make this project more friendly to use and to try and meet standards for a REST API. Since none of the dependencies are shipped to the browser, I believe it's irrelevant to the goals of this project.
@@ -80,12 +83,12 @@ While I'd love to use Jest as our test framework for consistency, this type of c
 
 In the project directory, you can run:
 
-### `npm run dev`
+### `pnpm dev`
 
 To start the app in dev mode.\
 Open [http://localhost:8000](http://localhost:8000) to view it in the browser.
 
-### `npm run build`
+### `pnpm build`
 
 To build the backend server
 
@@ -93,7 +96,7 @@ To build the backend server
 
 For production mode
 
-### `npm run test`
+### `pnpm test`
 
 Run the test cases.
 

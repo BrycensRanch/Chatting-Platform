@@ -5,9 +5,14 @@ const useSocket = () => {
   useEffect(() => {
     if (!socketCreated.current) {
       const socketInitializer = async () => {
-        await fetch('http://10.0.0.122:8000/v1/socket/new', {
-          // credentials: 'include',
-        });
+        await fetch(
+          `${
+            process.env.BACKEND_SERVER || 'http://localhost:8000'
+          }/v1/socket/new`,
+          {
+            credentials: 'include',
+          }
+        );
       };
       try {
         socketInitializer();
@@ -15,6 +20,7 @@ const useSocket = () => {
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
+        throw error;
       }
     }
   }, []);

@@ -20,7 +20,7 @@ on:
       - '.github/**'
 
 jobs:
-  build-and-test:
+  build-and-test-frontend:
     timeout-minutes: 10
     strategy:
       fail-fast: false
@@ -65,22 +65,43 @@ jobs:
         run: |
           pnpm build
         env:
-          PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-frontend?schema=public
+          # PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-frontend?schema=public
           NEXTJS_SENTRY_UPLOAD_DRY_RUN: true
+          NODE_ENV: production
       
-      - name: 🔢 Run Unit Tests
+      - name: 🔢 Run Unit tests
         working-directory: frontend
         continue-on-error: true
         run: |
-          pnpm test
-      - uses: codecov/codecov-action@v3
+          pnpm test:jest
+      # - name: Start docker compose
+      #   run: pnpm frontend-start
+      - name: 🧪 Run E2E Tests (Cypress)
+        if: ${{ !env.ACT }} 
+        uses: cypress-io/github-action@v5
+
+      - uses: actions/upload-artifact@v3
+        if: failure()
         with:
-          files: frontend/coverage/coverage-final.json
+          name: cypress-screenshots
+          path: ./frontend/cypress/screenshots
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cypress-videos
+          path: ./frontend/cypress/videos
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: build
+          path: |
+            ./frontend/.next
+            ./frontend/out
+            ./frontend/public
+      - uses: codecov/codecov-action@v3
+        if: ${{ !env.ACT }}
+        with:
           flags: unittests # optional
           name: codecov-frontend # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: false # optional (default = false)
-      # - name: Start docker compose
-      #   run: pnpm frontend-start
-      - name: 🧪 Run Cypress Tests
-        uses: cypress-io/github-action@v5

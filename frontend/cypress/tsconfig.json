@@ -5,6 +5,6 @@
     "lib": ["es5", "dom"],
     "isolatedModules": false
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "**/*.js"],
   "exclude": []
 }

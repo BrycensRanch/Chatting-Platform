@@ -4,20 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prepare": "husky install",
-    "start": "concurrently -c \"auto\" \"npm:start:frontend\" \"npm:start:backend\"",
-    "dev": "concurrently -c \"auto\" \"npm:dev:frontend\" \"npm:dev:backend\"",
-    "install-all": "pnpm install && cd frontend && pnpm install && cd ../backend && pnpm install",
-    "install-all:ci": "pnpm install && cd frontend && pnpm install  && cd ../backend && pnpm install ",
-    "update-all": "pnpm update && cd frontend && pnpm update && cd ../backend && pnpm update",
-    "install-all:npm": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "docker-start": "docker compose up --build",
-    "frontend-start": "cd frontend && npm run cleanbuild  && cd .. && docker compose up chatfrontend --detach --build",
-    "backend-start": "cd backend && npm run cleanbuild  && cd .. && docker compose up chatbackend --detach --build",
+    "start": "pnpm docker-start-other-services && concurrently -c \"auto\" \"npm:start:frontend\" \"npm:start:backend\"",
+    "build": "concurrently -c \"auto\" \"npm run cleanbuild -w=backend\" \"npm run cleanbuild -w=frontend\"",
+    "start:pm2": "concurrently -c \"auto\" \"npm:pm2:frontend\" \"npm:pm2:backend\" && pm2 save && pm2 logs --lines 1000",
+    "start:pm2:ts": "concurrently -c \"auto\" \"npm:pm2:ts:frontend\" \"npm:pm2:ts:backend\" && pm2 save && pm2 logs --lines 1000",
+    "dev": "pnpm docker-start-other-services && concurrently -c \"auto\" \"npm:dev:frontend\" \"npm:dev:backend\"",
+    "docker-start-other-services": "docker compose up cache -d",
+    "docker-start": "docker compose --env-file ./.env up --build --detach",
+    "frontend-start": "npm run docker -w=frontend",
+    "backend-start": "npm run docker -w=backend",
     "dev:frontend": "npm run dev -w=frontend",
     "dev:backend": "npm run dev -w=backend",
-    "start:frontend": "npm run start -w=frontend",
-    "start:backend": "npm run start -w=backend"
+    "start:frontend": "npm run cleanbuild:start -w=frontend",
+    "start:backend": "npm run start -w=backend",
+    "pm2:frontend": "npm run pm2 -w=frontend",
+    "pm2:backend": "npm run pm2 -w=backend",
+    "pm2:ts:frontend": "npm run pm2:ts -w=frontend",
+    "pm2:ts:backend": "npm run pm2:ts -w=backend"
   },
   "keywords": [],
   "author": "",
@@ -29,16 +32,29 @@
     "@testing-library/jest-dom": "^5.16.5",
     "commitizen": "^4.3.0",
     "commitlint-config-monorepo": "^2.0.2",
+    "concurrently": "^7.6.0",
     "husky": "^8.0.3",
-    "lint-staged": "^13.1.0",
+    "ignore-walk": "^6.0.1",
+    "lint-staged": "^13.1.1",
+    "npm-run-all": "^4.1.5",
     "recursive-readdir-synchronous": "^0.0.4"
   },
+  "optionalDependencies": {
+    "@socket.io/pm2": "^5.2.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
+  },
   "workspaces": [
-    "frontend/*",
-    "backend/*"
+    "frontend",
+    "backend"
   ],
+  "packageManager": "pnpm@7.3.0",
   "engines": {
-    "node": ">=14",
-    "pnpm": ">=7"
+    "node": ">=16",
+    "pnpm": ">=7",
+    "npm": ">=8.5.0"
   }
 }

@@ -17,83 +17,83 @@
 version: '3'
 
 services:
-  db:
-    image: 'postgres:alpine'
-    environment:
-      POSTGRES_USER: supertokens_user 
-      POSTGRES_PASSWORD: ${DB_PASSWORD} 
-      POSTGRES_DB: supertokens
-    ports:
-      - 5432:5432
-    networks:
-      - app_network
-    volumes:
-      - ./backend/PostgresData:/var/lib/postgresql/data
-      - ./init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+  # db:
+  #   image: 'postgres:alpine'
+  #   environment:
+  #     POSTGRES_USER: supertokens_user 
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD} 
+  #     POSTGRES_DB: supertokens
+  #   ports:
+  #     - 5432:5432
+  #   networks:
+  #     - app_network
+  #   volumes:
+  #     - ./backend/PostgresData:/var/lib/postgresql/data
+  #     - ./init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
 
-    restart: unless-stopped
-    healthcheck:
-      test: ['CMD', 'pg_isready -U supertokens_user']
-      interval: 5s
-      timeout: 5s
-      retries: 5
-  db2:
-    image: 'postgres:alpine'
-    environment:
-      POSTGRES_USER: prisma_user 
-      POSTGRES_PASSWORD: ${DB_PASSWORD} 
-      POSTGRES_DB: prisma
-    ports:
-      - 5433:5432
-    networks:
-      - app_network
-    volumes:
-      - ./backend/PostgresData2:/var/lib/postgresql/data
-      - ./init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ['CMD', 'pg_isready -U supertokens_user']
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
+  # db2:
+  #   image: 'postgres:alpine'
+  #   environment:
+  #     POSTGRES_USER: prisma_user 
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD} 
+  #     POSTGRES_DB: prisma
+  #   ports:
+  #     - 5433:5432
+  #   networks:
+  #     - app_network
+  #   volumes:
+  #     - ./backend/PostgresData2:/var/lib/postgresql/data
+  #     - ./init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
 
-    restart: unless-stopped
-    healthcheck:
-      test: ['CMD', 'pg_isready -U supertokens_user']
-      interval: 5s
-      timeout: 5s
-      retries: 5
-  pgAdmin:
-    image: dpage/pgadmin4
-    restart: unless-stopped
-    depends_on:
-      - db 
-    networks:
-      - app_network
-    ports:
-      - 3442:80
-    environment:
-       PGADMIN_DEFAULT_EMAIL: user@domain.com
-       PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD}
-       PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: 'True'
-       PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 10
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ['CMD', 'pg_isready -U supertokens_user']
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
+  # pgAdmin:
+  #   image: dpage/pgadmin4
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - db 
+  #   networks:
+  #     - app_network
+  #   ports:
+  #     - 3442:80
+  #   environment:
+  #      PGADMIN_DEFAULT_EMAIL: user@domain.com
+  #      PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD}
+  #      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: 'True'
+  #      PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 10
 
-  supertokens:
-    image: registry.supertokens.io/supertokens/supertokens-postgresql
-    depends_on:
-      - db
-    ports:
-      - 3567:3567
-    environment:
-      POSTGRESQL_USER: supertokens_user
-      POSTGRESQL_HOST: 'host.docker.internal'
-      POSTGRESQL_PORT: 5432
-      API_KEYS: ${SUPERTOKENS_API_KEY}
-      POSTGRESQL_PASSWORD: ${DB_PASSWORD} 
-      POSTGRESQL_DATABASE_NAME: supertokens
-    networks:
-      - app_network
-    restart: unless-stopped
-    healthcheck:
-      test: >
-        bash -c 'exec 3<>/dev/tcp/127.0.0.1/3567 && echo -e "GET /hello HTTP/1.1\r\nhost: 127.0.0.1:3567\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep "Hello"'
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  # supertokens:
+  #   image: registry.supertokens.io/supertokens/supertokens-postgresql
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - 3567:3567
+  #   environment:
+  #     POSTGRESQL_USER: supertokens_user
+  #     POSTGRESQL_HOST: 'host.docker.internal'
+  #     POSTGRESQL_PORT: 5432
+  #     API_KEYS: ${SUPERTOKENS_API_KEY}
+  #     POSTGRESQL_PASSWORD: ${DB_PASSWORD} 
+  #     POSTGRESQL_DATABASE_NAME: supertokens
+  #   networks:
+  #     - app_network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: >
+  #       bash -c 'exec 3<>/dev/tcp/127.0.0.1/3567 && echo -e "GET /hello HTTP/1.1\r\nhost: 127.0.0.1:3567\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep "Hello"'
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
   chatfrontend:
     build: ./frontend
     # depends_on:
@@ -117,14 +117,15 @@ services:
     build: ./backend
     depends_on:
       - cache
-      - supertokens 
-      - db 
+      # - supertokens 
+      # - db 
     ports:
       - 8000:8000
     networks:
       - app_network
     environment:
       - NODE_ENV=production
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@host.docker.internal:6379
     restart: unless-stopped
     healthcheck:
       test: >

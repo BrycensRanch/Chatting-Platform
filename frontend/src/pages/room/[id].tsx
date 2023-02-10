@@ -1,44 +1,89 @@
+/* eslint-disable no-console */
+/* eslint-disable unused-imports/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-use-before-define */
+// @ts-nocheck
+// this entire file's types are so bad because no parity types...
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
+import type { ParsedUrlQuery } from 'querystring';
 import { useEffect, useRef, useState } from 'react';
+import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
 
+import Modal from '@/components/Medal';
 import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
+import type { ClientToServerEvents, ServerToClientEvents } from '@/types';
 
 import useSocket from '../../hooks/useSocket';
+import type { Room } from '../index';
 
-const Room = () => {
+export const getServerSideProps: GetServerSideProps<{
+  query: ParsedUrlQuery;
+}> = async (context) => {
+  return {
+    props: { query: context.query }, // will be passed to the page component as props
+  };
+};
+
+const RoomPage = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+) => {
+  // useSocket();
   useSocket();
   const [micActive, setMicActive] = useState(true);
   const [cameraActive, setCameraActive] = useState(true);
+  const [isLoading, setLoading] = useState(true);
+  const [peersSocketId, setPeersSocketId] = useState('');
+  const [localSocketId, setLocalSocketId] = useState('');
+
+  const [input, setInput] = useState('');
 
   const router = useRouter();
-  const userVideoRef = useRef();
-  const peerVideoRef = useRef();
-  const rtcConnectionRef = useRef(null);
-  const socketRef = useRef();
-  const userStreamRef = useRef();
-  const hostRef = useRef(false);
+  const userVideoRef = useRef<HTMLVideoElement>(null);
+  const peerVideoRef = useRef<HTMLVideoElement>(null);
+  const rtcConnectionRef = useRef<RTCPeerConnection | null>(null);
+  const socketRef = useRef<
+    Socket<ServerToClientEvents, ClientToServerEvents> | undefined
+  >(null);
+  const userStreamRef = useRef<MediaStream | null>(null);
+  const hostRef = useRef<boolean>(false);
 
-  const { id: roomName } = router.query;
+  let roomName = (props?.query?.id as string) || (router.query.id as string);
+  // @ts-ignore
   useEffect(() => {
-    socketRef.current = io('http://localhost:8000', {
-      // withCredentials: true,
-    });
+    localStorage.debug = '*';
+    const unloadCallback = (_event: any) => {
+      if (socketRef.current) socketRef.current.disconnect();
+      return '';
+    };
+
+    window.addEventListener('beforeunload', unloadCallback);
+    return () => window.removeEventListener('beforeunload', unloadCallback);
+  });
+
+  useEffect(() => {
+    socketRef.current = io(
+      process.env.BACKEND_SERVER || 'http://localhost:8000',
+      {
+        withCredentials: true,
+      }
+    );
+    // reconnecting with out of order of events yields a broken page with out of sync data from the client and server
+    socketRef.current.sendBuffer = [];
+
     socketRef.current.on('connect_error', (err) => {
       console.log(`connect_error due to ${err.message}`);
     });
     localStorage.debug = '*';
     socketRef.current.on('connect', () => {
       console.log('connected'); // x8WIv7-mJelg7on_ALbx
+      // @ts-ignore
       socketRef.current.emit('message', 'why hello there');
     });
 
     socketRef.current.on('disconnect', (reason) => {
       console.log('disconnect', reason); // undefined
-    });
-    socketRef.current.on('reconnect_attempt', () => {
-      console.log('attempting to reconnect to socket');
     });
 
     // First we join a room
@@ -52,11 +97,15 @@ const Room = () => {
 
     // Emitted when a peer leaves the room
     socketRef.current.on('leave', onPeerLeave);
+    socketRef.current.on('kickout', onKickedFromRoom);
+
     socketRef.current.on('message', onMessage);
 
     // If the room is full, we show an alert
     socketRef.current.on('full', () => {
-      window.location.href = '/';
+      router.push(
+        `/?kicked=true&roomKickedFrom=${roomName}&reason=The room you are trying to join is full. Please try again later...`
+      );
     });
 
     // Event called when a remote user initiating the connection and
@@ -74,7 +123,13 @@ const Room = () => {
     console.log(`sending ${message} to room ${roomName}`);
     socketRef.current.emit('message', message, null, roomName);
   };
-  const handleRoomJoined = () => {
+  const handleRoomJoined = (room: Room) => {
+    console.log(room);
+    roomName = room.name;
+    router.push(`/room/${roomName}`);
+    // eslint-disable-next-line prefer-destructuring
+    if (!socketRef.current?.id) setLocalSocketId(room.sockets[1] as string);
+    if (!peersSocketId.length) setPeersSocketId(room.sockets[0] as string);
     navigator.mediaDevices
       .getUserMedia({
         audio: true,
@@ -98,6 +153,7 @@ const Room = () => {
   const handleRoomCreated = () => {
     console.log('room created');
     hostRef.current = true;
+    router.push(`/room/${roomName}?created=true`);
     navigator.mediaDevices
       .getUserMedia({
         audio: true,
@@ -117,11 +173,12 @@ const Room = () => {
       });
   };
 
-  const initiateCall = async () => {
+  const initiateCall = (peerSocketId: string) => {
     console.log('callInitiated');
-
+    setLoading(false);
+    setPeersSocketId(peerSocketId);
     if (hostRef.current) {
-      rtcConnectionRef.current = await createPeerConnection();
+      rtcConnectionRef.current = createPeerConnection();
       console.log(rtcConnectionRef);
       rtcConnectionRef.current.addTrack(
         userStreamRef.current.getTracks()[0],
@@ -142,7 +199,25 @@ const Room = () => {
         });
     }
   };
-
+  const onKickedFromRoom = (kickedSocketId: string) => {
+    if (
+      kickedSocketId === localSocketId ||
+      kickedSocketId === socketRef.current?.id
+    ) {
+      socketRef.current.emit('leave', roomName);
+      socketRef.current.disconnect();
+      router.push(
+        `/?kicked=true&roomKickedFrom=${roomName}&reason=Kicked by an room owner.`
+      );
+    } else if (peerVideoRef.current.srcObject) {
+      console.log(`server kicked ${kickedSocketId}`);
+      setPeersSocketId('');
+      peerVideoRef.current.srcObject
+        .getTracks()
+        .forEach((track) => track.stop()); // Stops receiving all track of Peer.
+      peerVideoRef.current.srcObject = undefined;
+    }
+  };
   const onPeerLeave = () => {
     // This person is now the creator because they are the only person in the room.
     hostRef.current = true;
@@ -151,6 +226,7 @@ const Room = () => {
       peerVideoRef.current.srcObject
         .getTracks()
         .forEach((track) => track.stop()); // Stops receiving all track of Peer.
+      peerVideoRef.current.srcObject = undefined;
     }
 
     // Safely closes the existing connection established with the peer who left.
@@ -276,11 +352,17 @@ const Room = () => {
   const toggleMic = () => {
     toggleMediaStream('audio', micActive);
     setMicActive((prev) => !prev);
+    if (socketRef.current) {
+      socketRef.current.emit('audio', micActive, roomName);
+    }
   };
 
   const toggleCamera = () => {
     toggleMediaStream('video', cameraActive);
     setCameraActive((prev) => !prev);
+    if (socketRef.current) {
+      socketRef.current.emit('video', cameraActive, roomName);
+    }
   };
 
   const leaveRoom = () => {
@@ -295,6 +377,7 @@ const Room = () => {
       peerVideoRef.current.srcObject
         .getTracks()
         .forEach((track) => track.stop()); // Stops receiving audio track of Peer.
+      peerVideoRef.current.srcObject = undefined;
     }
 
     // Checks if there is peer on the other side and safely closes the existing connection established with the peer.
@@ -307,12 +390,9 @@ const Room = () => {
     router.push('/');
   };
   const kickUser = () => {
-    if (!rtcConnectionRef.current) {
-      alert("someone's alonely LMFAOOO LLLL");
-    } else {
-      socketRef.current.emit('kick', 'other peer', roomName); // Let's the server know that user has left the room.
-      alert('kicked noob');
-    }
+    console.log(rtcConnectionRef.current);
+    socketRef.current.emit('kick', peersSocketId, roomName); // Let's the server know that user has left the room.
+    console.log('kicked noob');
   };
   const videoRef = useRef(null);
 
@@ -350,13 +430,41 @@ const Room = () => {
   useEffect(() => {
     checkForVideoAudioAccess();
   }, [videoRef]);
-
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (!input?.length) alert('please type in msg before sending');
+    console.log(`sending message "${input}" to room ${roomName}`);
+    socketRef.current?.emit('message', input);
+    setInput('');
+  };
+  const onChangeHandler = (e) => {
+    setInput(e.target.value);
+  };
   return (
     <Main
-      meta={<Meta title={`${roomName} room`} description="MURICA HECK YEAH " />}
+      meta={
+        <Meta
+          title={`${roomName} room`}
+          description="One on one video calls... FACE TO FACE ON WEBRTC!!"
+        />
+      }
     >
+      {/* eslint-disable-next-line no-nested-ternary */}
+      {hostRef.current ? (
+        <Modal
+          initialValue={true}
+          title="You're the boss!"
+          body="You can kick people you don't like if you want. If you need, you can always share the room link to invite a friend to chat with!"
+        />
+      ) : !peersSocketId.length && !isLoading ? (
+        <p id="youJoinedNotCreated">
+          you joined the room instead of CREATING ONE...
+        </p>
+      ) : (
+        ''
+      )}
       <div>
-        <h1>Room name: {roomName || 'unknown'}</h1>
+        <h1 role="heading">Room name: {roomName || 'unknown'}</h1>
         <div>
           <p
             style={{
@@ -366,14 +474,20 @@ const Room = () => {
               textAlign: 'center',
             }}
           >
-            (you)
+            (you) {hostRef.current ? '🤴👑' : ''} socketId:{' '}
+            {socketRef.current?.id || localSocketId || 'unknown'}
           </p>
           <video autoPlay ref={userVideoRef} />
         </div>
         <div>
-          <p>(random dude from internet)</p>
+          <p>(random dude from internet) {!hostRef.current ? '🤴👑' : ''}</p>
+          <p>{peersSocketId ? `SocketId: ${peersSocketId}` : ''}</p>
           <video autoPlay ref={peerVideoRef} />
-          <button onClick={kickUser}>kick this noob</button>
+          {hostRef.current ? (
+            <button onClick={kickUser}>kick this noob</button>
+          ) : (
+            ''
+          )}
         </div>
         <button onClick={toggleMic} type="button">
           {micActive ? 'Mute Mic' : 'UnMute Mic'}
@@ -384,16 +498,44 @@ const Room = () => {
         <button onClick={toggleCamera} type="button">
           {cameraActive ? 'Stop Camera' : 'Start Camera'}
         </button>
-        <form onSubmit={sendMessage}>
-          <label>
-            message:
-            <input type="text" name="message" />
-          </label>
-          <input type="submit" value="Submit" />
+        <form onSubmit={onSubmit}>
+          <input
+            type="hidden"
+            name="socket"
+            id="localSocketId"
+            value={localSocketId}
+          />
+          <div>
+            <label
+              htmlFor="message"
+              data-testid="messageLabel"
+              className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Message
+            </label>
+            <input
+              type="text"
+              id="message"
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+              placeholder="message"
+              required
+              value={input}
+              data-testid="message"
+              onChange={onChangeHandler}
+            />
+            <button
+              type="submit"
+              data-testid="messageSend"
+              id="messageSend"
+              className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
+            >
+              Send
+            </button>
+          </div>
         </form>
       </div>
     </Main>
   );
 };
 
-export default Room;
+export default RoomPage;

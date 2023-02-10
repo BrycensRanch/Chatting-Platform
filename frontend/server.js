@@ -18,7 +18,8 @@ app.prepare().then(() => {
       // This tells it to parse the query portion of the URL.
       const parsedUrl = parse(req.url, true);
       const { pathname } = parsedUrl;
-
+      const publicFolderPath = join(__dirname, 'public');
+      app.serveStatic(req, res, publicFolderPath);
       if (
         pathname === '/sw.js' ||
         /^\/(workbox|worker|fallback)-\w+\.js$/.test(pathname)

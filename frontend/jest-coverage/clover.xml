@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1675914085736" clover="3.2.0">
+  <project timestamp="1675914085737" name="All files">
+    <metrics statements="36" coveredstatements="33" conditionals="11" coveredconditionals="8" methods="14" coveredmethods="13" elements="61" coveredelements="54" complexity="0" loc="36" ncloc="36" packages="6" files="6" classes="6"/>
+    <package name="components">
+      <metrics statements="10" coveredstatements="9" conditionals="6" coveredconditionals="4" methods="5" coveredmethods="4"/>
+      <file name="Medal.tsx" path="C:\Users\Brycen\Documents\Projects\ChattingPlatform\frontend\src\components\Medal.tsx">
+        <metrics statements="10" coveredstatements="9" conditionals="6" coveredconditionals="4" methods="5" coveredmethods="4"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="11" count="3" type="stmt"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="22" count="1" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="75" count="1" type="stmt"/>
+        <line num="77" count="1" type="stmt"/>
+        <line num="78" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="hooks">
+      <metrics statements="13" coveredstatements="11" conditionals="3" coveredconditionals="2" methods="4" coveredmethods="4"/>
+      <file name="useSocket.tsx" path="C:\Users\Brycen\Documents\Projects\ChattingPlatform\frontend\src\hooks\useSocket.tsx">
+        <metrics statements="13" coveredstatements="11" conditionals="3" coveredconditionals="2" methods="4" coveredmethods="4"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="4" count="7" type="stmt"/>
+        <line num="5" count="7" type="stmt"/>
+        <line num="6" count="4" type="cond" truecount="1" falsecount="0"/>
+        <line num="7" count="4" type="stmt"/>
+        <line num="8" count="4" type="stmt"/>
+        <line num="17" count="4" type="stmt"/>
+        <line num="18" count="4" type="stmt"/>
+        <line num="19" count="4" type="stmt"/>
+        <line num="22" count="0" type="stmt"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="29" count="7" type="stmt"/>
+      </file>
+    </package>
+    <package name="layouts">
+      <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+      <file name="Meta.tsx" path="C:\Users\Brycen\Documents\Projects\ChattingPlatform\frontend\src\layouts\Meta.tsx">
+        <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="14" count="8" type="stmt"/>
+        <line num="114" count="8" type="stmt"/>
+      </file>
+    </package>
+    <package name="pages.api">
+      <metrics statements="2" coveredstatements="2" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+      <file name="health.ts" path="C:\Users\Brycen\Documents\Projects\ChattingPlatform\frontend\src\pages\api\health.ts">
+        <metrics statements="2" coveredstatements="2" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="templates">
+      <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="Main.tsx" path="C:\Users\Brycen\Documents\Projects\ChattingPlatform\frontend\src\templates\Main.tsx">
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="64" count="9" type="stmt"/>
+      </file>
+    </package>
+    <package name="utils">
+      <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="AppConfig.ts" path="C:\Users\Brycen\Documents\Projects\ChattingPlatform\frontend\src\utils\AppConfig.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="59" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

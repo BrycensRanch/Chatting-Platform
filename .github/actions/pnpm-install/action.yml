@@ -17,10 +17,12 @@ runs:
 
   steps:
     - uses: pnpm/action-setup@v2
-      with:
-        version: 7
+      # If you're not setting the packageManager field in package.json, add the version here
+      # with:
+      #   version: 7.16.1
 
     - name: Expose pnpm config(s) through "$GITHUB_OUTPUT"
+      if: ${{ !env.ACT }}
       id: pnpm-config
       shell: bash
       run: |
@@ -28,12 +30,14 @@ runs:
 
     - name: Cache rotation keys
       id: cache-rotation
+      if: ${{ !env.ACT }}
       shell: bash
       run: |
         echo "YEAR_MONTH=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
 
     - uses: actions/cache@v3
       name: Setup pnpm cache
+      if: ${{ !env.ACT }}
       with:
         path: ${{ steps.pnpm-config.outputs.STORE_PATH }}
         key: ${{ runner.os }}-pnpm-store-cache-${{ steps.cache-rotation.outputs.YEAR_MONTH }}-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -52,4 +56,4 @@ runs:
       run: pnpm install --frozen-lockfile --strict-peer-dependencies --prefer-offline
       env:
         # Other environment variables
-        HUSKY: '0' # By default do not run HUSKY install        
+        HUSKY: '0' # By default do not run HUSKY install     

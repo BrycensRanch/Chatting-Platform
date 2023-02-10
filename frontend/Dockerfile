@@ -16,9 +16,12 @@ SHELL ["bash", "-c"]
 # set right (secure) folder permissions
 RUN mkdir -p /home/nodejs/app/node_modules && chown -R nodejs:nodejs /home/nodejs/app
 
+# PNPM FOR ALPINE LINUX IS KINDA COMPLICATED...
 RUN wget -qO /bin/pnpm "https://github.com/pnpm/pnpm/releases/latest/download/pnpm-linuxstatic-x64" && chmod +x /bin/pnpm
 RUN mkdir -p /home/nodejs/.pnpm-store && chown -R nodejs:nodejs /home/nodejs/.pnpm-store
+RUN mkdir -p /home/nodejs/.pnpm-global && chown -R nodejs:nodejs /home/nodejs/.pnpm-global
 RUN pnpm config set store-dir /home/nodejs/.pnpm-store
+
 
 USER nodejs
 WORKDIR /home/nodejs/app
@@ -26,20 +29,19 @@ WORKDIR /home/nodejs/app
 # COPY --chown=nodejs:nodejs . . 
 
 ENV NODE_ENV=production
+ENV PNPM_HOME=/home/nodejs/.local/share/pnpm    
+ENV PATH=$PATH:$PNPM_HOME   
 
 # Install dependencies based on the preferred package manager
 COPY --chown=nodejs:nodejs package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci --omit=dev --ignore-scripts; \
-  elif [ -f pnpm-lock.yaml ]; then pnpm i --prod; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+RUN pnpm install --prod 
 
 #RUN npm i -g next
 
-# Work in progress, this can cause mismatched global dependencies
-RUN pnpm i -g pm2 rimraf
+# Work in progress
+RUN SHELL=bash pnpm setup
+# RUN pnpm add -g pm2
+RUN pnpm add -g cross-env rimraf
 
 # Rebuild the source code only when needed
 # FROM timbru31/node-alpine-git:hydrogen AS builder
@@ -68,7 +70,7 @@ RUN pnpm i -g pm2 rimraf
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --chown=nodejs:nodejs .next ./.next
-COPY --chown=nodejs:nodejs .env ./.env
+COPY --chown=nodejs:nodejs .env* ./
 COPY --chown=nodejs:nodejs healthCheck.js ./healthCheck.js
 
 # COPY --chown=nodejs:nodejs .next/static* ./.next/static
@@ -94,4 +96,6 @@ COPY --chown=nodejs:nodejs pm2.config.js .
 COPY --chown=nodejs:nodejs server.js .
 
 # Using Containers? We got your back. Start today using pm2-runtime, a perfect companion to get the most out of Node.js in production environment.
-CMD ["pnpm", "pm2"]
+# we're not using pm2 in containers waste of time and resources
+CMD ["npm", "start"]
+# CMD ["pnpm", "pm2"]

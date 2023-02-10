@@ -11,14 +11,14 @@ describe('Seo metadata', () => {
         .invoke('attr', 'content')
         .should('not.be.empty');
     });
+    it('should render SEO metadata on a room', () => {
+      const roomName = 'testing seo';
+      cy.visit(`/room/${roomName}`);
 
-    it('should render SEO metadata on About page', () => {
-      cy.visit('/about');
+      // The room testing seo page should have a page title
+      cy.title().should('contain', roomName);
 
-      // The About page should have a page title
-      cy.title().should('not.be.empty');
-
-      // The About page should also contain a meta description for SEO
+      // The Index page should also contain a meta description for SEO
       cy.get('head meta[name="description"]')
         .invoke('attr', 'content')
         .should('not.be.empty');

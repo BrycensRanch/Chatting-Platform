@@ -31,17 +31,9 @@ const Main = (props: IMainProps) => (
               </Link>
             </li>
             <li className="mr-6">
-              <Link
-                href="/about/"
-                className="border-none text-gray-700 hover:text-gray-900"
-              >
-                About
-              </Link>
-            </li>
-            <li className="mr-6">
               <a
                 className="border-none text-gray-700 hover:text-gray-900"
-                href="https://github.com/ixartz/Next-js-Boilerplate"
+                href="https://github.com/BrycensRanch/Chatting-Platform"
               >
                 GitHub
               </a>

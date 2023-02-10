@@ -20,7 +20,7 @@ on:
       - '.github/**'
 
 jobs:
-  build-and-test:
+  build-and-test-backend:
     timeout-minutes: 10
     strategy:
       fail-fast: false
@@ -63,19 +63,52 @@ jobs:
         working-directory: backend
         run: |
           pnpm build
-      
+        env:
+          # PRISMA_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/chat-frontend?schema=public
+          NEXTJS_SENTRY_UPLOAD_DRY_RUN: true
+          NODE_ENV: production
+      # - name: Install Codecov Uploader
+      #   working-directory: backend
+      #   run: |
+      #     curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --no-default-keyring --keyring trustedkeys.gpg --import # One-time step that we do everytime
+
+      #     curl -Os https://uploader.codecov.io/latest/linux/codecov
+
+      #     curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
+
+      #     curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM.sig
+
+      #     gpgv codecov.SHA256SUM.sig codecov.SHA256SUM
+
+      #     shasum -a 256 -c codecov.SHA256SUM
+
+      #     chmod +x codecov
+
       - name: 🔢 Run Unit Tests
         working-directory: backend
         continue-on-error: true
+        
         run: |
-          pnpm add coveralls --save-dev && pnpm test
+          pnpm test
         env: 
-           COVERALLS_REPO_TOKEN: uAAFMrMGWR2DpgN8GSupdDSFWJZTAuIZV
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
+           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+           NEXTJS_SENTRY_UPLOAD_DRY_RUN: true
+
+      # - uses: codecov/codecov-action@v3
+      #   with:
+      #     flags: unittests-backend # optional
+      #     name: codecov-backend # optional
+      #     fail_ci_if_error: true # optional (default = false)
+      #     verbose: false # optional (default = false)
+      #     working-directory: backend
+      - uses: actions/upload-artifact@v3
+        if: always()
         with:
-          github-token: uAAFMrMGWR2DpgN8GSupdDSFWJZTAuIZV
-      # - name: Start docker compose
-      #   run: pnpm backend-start
+          name: build
+          path: ./backend/dist
       # - name: 🧪 Run Cypress Tests
       #   uses: cypress-io/github-action@v5
+      # - name: Coveralls
+      #   uses: coverallsapp/github-action@master
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}

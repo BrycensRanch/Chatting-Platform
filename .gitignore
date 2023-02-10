@@ -56,8 +56,6 @@ profile-*
 # webstorm
 .idea
 
-# vscode
-.vscode
 *code-workspace
 
 # clinic

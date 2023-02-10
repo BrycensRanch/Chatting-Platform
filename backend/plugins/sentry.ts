@@ -15,12 +15,16 @@ export default fp<
   RawServerDefault,
   FastifyTypeProviderDefault
 >(async (fastify) => {
-  fastify.register(sentry, {
-    dsn:
-      SENTRY_DSN ||
-      'https://443b778a8d7d4e4cbd108e3b0fe0a29f@o4504136997928960.ingest.sentry.io/4504147621904384',
-    environment: process.env.NODE_ENV,
-    tracesSampleRate: 1.0,
-    setErrorHandler: false,
-  });
+  if (SENTRY_DSN) {
+    fastify.register(sentry, {
+      dsn: SENTRY_DSN,
+      environment: process.env.NODE_ENV,
+      tracesSampleRate: 1.0,
+      setErrorHandler: false,
+    });
+  } else {
+    console.log(
+      'did not load sentry because no sentry_dsn environment variable was provided'
+    );
+  }
 });

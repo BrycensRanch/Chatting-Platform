@@ -1,38 +1,84 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // eslint-disable-next-line @next/next/no-document-import-in-page
-import type { ImageLoader } from 'next/image';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import type { Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
 
+import Medal from '@/components/Medal';
+import useSocket from '@/hooks/useSocket';
 import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
+import type { ClientToServerEvents, ServerToClientEvents } from '@/types';
+
+export type Room = {
+  name: string;
+  sockets: string[];
+};
 
 const Index = () => {
-  const [rooms, setRooms] = useState([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [isLoading, setLoading] = useState(false);
 
-  const fetchRooms = async () => {
-    try {
-      const response = await fetch('http://10.0.0.122:8000/v1/rooms');
-      const data = await response.json();
-      return data;
-    } catch {
-      return [];
-    }
-  };
-  const router = useRouter();
-  const myLoader: ImageLoader = ({ src, width, quality }) => {
-    return `${router.basePath}/assets/images/${src}?w=${width}&q=${
-      quality || 75
-    }`;
-  };
+  useSocket();
+  const socketRef = useRef<Socket<
+    ServerToClientEvents,
+    ClientToServerEvents
+  > | null>(null);
   useEffect(() => {
-    setLoading(true);
-    fetchRooms().then((data) => {
-      setRooms(data);
+    const unloadCallback = (_event: any) => {
+      if (socketRef.current) socketRef.current.disconnect();
+      return '';
+    };
+
+    window.addEventListener('beforeunload', unloadCallback);
+    return () => window.removeEventListener('beforeunload', unloadCallback);
+  });
+  const fetchRooms = async () => {
+    if (!socketRef.current) {
+      socketRef.current = io(
+        process.env.BACKEND_SERVER || 'http://localhost:8000',
+        {
+          withCredentials: true,
+        }
+      );
+      socketRef.current.on('connect_error', (err) => {
+        console.log(`connect_error due to ${err.message}`);
+      });
+      socketRef.current.on('connect', () => {
+        console.log(`Connected to Socket IO server for room information...`);
+      });
+
+      socketRef.current.on('disconnect', (reason) => {
+        console.log('disconnect', reason); // undefined
+      });
+      // socketRef.current.on('reconnect_attempt', () => {
+      //   console.log('attempting to reconnect to socket');
+      // });
+    }
+    socketRef.current.emit('get-rooms');
+    socketRef.current.on('rooms', (fetchedRooms: Room[]) => {
+      // socket.disconnect();
+      // ignore errored/unitiatialized sockets
+      setRooms(fetchedRooms.filter((r) => r.name !== r.sockets[0]));
       setLoading(false);
     });
+  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchRooms();
+    }, 1500);
+    return () => clearInterval(interval);
+  }, []);
+  const router = useRouter();
+  // const myLoader: ImageLoader = ({ src, width, quality }) => {
+  //   return `${router.basePath}/assets/images/${src}?w=${width}&q=${
+  //     quality || 75
+  //   }`;
+  // };
+  useEffect(() => {
+    setLoading(true);
+    fetchRooms();
   }, []);
   const [roomName, setRoomName] = useState('');
 
@@ -44,214 +90,74 @@ const Index = () => {
     <Main
       meta={
         <Meta
-          title="Next.js Boilerplate Presentation"
-          description="Next js Boilerplate is the perfect starter code for your project. Build your React application with the Next.js framework."
+          title="House Door"
+          description="One on one calls powered by WebRTC"
         />
       }
     >
-      <a href="https://github.com/ixartz/Next-js-Boilerplate">
-        <Image
-          loader={myLoader}
-          src="nextjs-starter-banner.png?webp"
-          alt="Nextjs starter banner"
-          width="1280"
-          height="720"
-          priority
+      <h1 role="heading">Rooms:</h1>
+      {router.query.kicked ? (
+        <Medal
+          title="Kicked from room... :("
+          body={router.query.reason as string}
         />
-      </a>
-      <h1 className="text-2xl font-bold">
-        Boilerplate code for your Nextjs project with Tailwind CSS
-      </h1>
-      <p>
-        <span role="img" aria-label="rocket">
-          🚀
-        </span>{' '}
-        Next.js Boilerplate is a starter code for your Next js project by
-        putting developer experience first .{' '}
-        <span role="img" aria-label="zap">
-          ⚡️
-        </span>{' '}
-        Made with Next.js, TypeScript, ESLint, Prettier, Husky, Lint-Staged,
-        VSCode, Netlify, PostCSS, Tailwind CSS.
-      </p>
-      <h2 className="text-lg font-semibold">Next js Boilerplate Features</h2>
-      <p>Developer experience first:</p>
-      {isLoading ? <p>Loading...</p> : ''}
-      {!rooms.length ? <p>No room data or backend is offline</p> : ''}
+      ) : (
+        ''
+      )}
+      {isLoading ? <p data-testid="isLoading">Loading...</p> : ''}
+      {!rooms.length ? (
+        <p data-testid="roomNotification">
+          No room data or backend is offline or "unreachable"
+        </p>
+      ) : (
+        ''
+      )}
+      <ul>
+        {rooms?.map((room) => {
+          // @ts-ignore
+          return (
+            <li key={room.name}>
+              <a href={`/room/${room.name}`}>{room.name}</a>
+            </li>
+          );
+        })}
+      </ul>
       <main>
-        <h1>Lets create a room!</h1>
-        <input
-          aria-label="room name"
-          onChange={(e) => setRoomName(e.target.value)}
-          value={roomName}
-        />
-        <button onClick={joinRoom} type="button">
-          Join Room
-        </button>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            joinRoom();
+          }}
+        >
+          <div>
+            <label
+              htmlFor="room"
+              className="mb-2 block text-sm font-medium text-gray-900"
+            >
+              Room
+            </label>
+            <input
+              type="text"
+              id="room"
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+              placeholder="room name"
+              data-testid="roomName"
+              required
+              aria-label="room name"
+              onChange={(e) => setRoomName(e.target.value)}
+              value={roomName}
+            />
+            <button
+              onClick={joinRoom}
+              aria-label="Join Or Create Room"
+              data-testid="joinOrCreateRoomButton"
+              className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
+            >
+              Join/Create Room
+            </button>
+          </div>
+        </form>
       </main>
-      <ul>
-        {rooms?.map(
-          (post: {
-            id: string;
-            title: string;
-            description: string;
-            content: string;
-          }) => {
-            // @ts-ignore
-            return (
-              <li
-                // @ts-ignore
-                style={{ color: `${post.published ? 'green' : 'red'}` }}
-                // @ts-ignore
-                key={post.id}
-              >
-                {post.title}:{post.content}.
-              </li>
-            );
-          }
-        )}
-      </ul>
-      <ul>
-        <li>
-          <span role="img" aria-label="fire">
-            🔥
-          </span>{' '}
-          <a href="https://nextjs.org" rel="nofollow">
-            Next.js
-          </a>{' '}
-          for Static Site Generator
-        </li>
-        <li>
-          <span role="img" aria-label="art">
-            🎨
-          </span>{' '}
-          Integrate with{' '}
-          <a href="https://tailwindcss.com" rel="nofollow">
-            Tailwind CSS
-          </a>
-        </li>
-        <li>
-          <span role="img" aria-label="nail_care">
-            💅
-          </span>{' '}
-          PostCSS for processing Tailwind CSS
-        </li>
-        <li>
-          <span role="img" aria-label="tada">
-            🎉
-          </span>{' '}
-          Type checking Typescript
-        </li>
-        <li>
-          <span role="img" aria-label="pencil2">
-            ✏️
-          </span>{' '}
-          Linter with{' '}
-          <a href="https://eslint.org" rel="nofollow">
-            ESLint
-          </a>
-        </li>
-        <li>
-          <span role="img" aria-label="hammer_and_wrench">
-            🛠
-          </span>{' '}
-          Code Formatter with{' '}
-          <a href="https://prettier.io" rel="nofollow">
-            Prettier
-          </a>
-        </li>
-        <li>
-          <span role="img" aria-label="fox_face">
-            🦊
-          </span>{' '}
-          Husky for Git Hooks
-        </li>
-        <li>
-          <span role="img" aria-label="no_entry_sign">
-            🚫
-          </span>{' '}
-          Lint-staged for running linters on Git staged files
-        </li>
-        <li>
-          <span role="img" aria-label="no_entry_sign">
-            🗂
-          </span>{' '}
-          VSCode configuration: Debug, Settings, Tasks and extension for
-          PostCSS, ESLint, Prettier, TypeScript
-        </li>
-        <li>
-          <span role="img" aria-label="robot">
-            🤖
-          </span>{' '}
-          SEO metadata, JSON-LD and Open Graph tags with Next SEO
-        </li>
-        <li>
-          <span role="img" aria-label="robot">
-            ⚙️
-          </span>{' '}
-          <a
-            href="https://www.npmjs.com/package/@next/bundle-analyzer"
-            rel="nofollow"
-          >
-            Bundler Analyzer
-          </a>
-        </li>
-        <li>
-          <span role="img" aria-label="rainbow">
-            🌈
-          </span>{' '}
-          Include a FREE minimalist theme
-        </li>
-        <li>
-          <span role="img" aria-label="hundred">
-            💯
-          </span>{' '}
-          Maximize lighthouse score
-        </li>
-      </ul>
-      <p>Built-in feature from Next.js:</p>
-      <ul>
-        <li>
-          <span role="img" aria-label="coffee">
-            ☕
-          </span>{' '}
-          Minify HTML &amp; CSS
-        </li>
-        <li>
-          <span role="img" aria-label="dash">
-            💨
-          </span>{' '}
-          Live reload
-        </li>
-        <li>
-          <span role="img" aria-label="white_check_mark">
-            ✅
-          </span>{' '}
-          Cache busting
-        </li>
-      </ul>
-      <h2 className="text-lg font-semibold">Our Stater code Philosophy</h2>
-      <ul>
-        <li>Minimal code</li>
-        <li>SEO-friendly</li>
-        <li>
-          <span role="img" aria-label="rocket">
-            🚀
-          </span>{' '}
-          Production-ready
-        </li>
-      </ul>
-      <p>
-        Check our GitHub project for more information about{' '}
-        <a href="https://github.com/ixartz/Next-js-Boilerplate">
-          Nextjs Boilerplate
-        </a>
-        . You can also browse our{' '}
-        <a href="https://creativedesignsguru.com/category/nextjs/">
-          Premium NextJS Templates
-        </a>{' '}
-        on our website to support this project.
-      </p>
     </Main>
   );
 };

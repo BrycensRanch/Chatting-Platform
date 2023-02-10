@@ -1,0 +1,15 @@
+{
+  "name": "chatbackend",
+  "description": "fastify backend server with socketio and jest",
+  "repository": "https://github.com/BrycensRanch/Chatting-Platform",
+  "logo": "https://github.com/fastify/graphics/raw/master/full-logo.png",
+  "keywords": [
+    "fastify",
+    "heroku",
+    "zeet",
+    "web framework",
+    "node.js",
+    "low overhead"
+  ],
+  "website": "http://brycens.tech"
+}

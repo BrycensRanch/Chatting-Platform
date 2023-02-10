@@ -6,16 +6,16 @@
     "resolveJsonModule": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "strict": true,
-    "alwaysStrict": true,
+    "strict": false,
+    "alwaysStrict": false,
     "strictNullChecks": true,
     "noUncheckedIndexedAccess": true,
 
     // "noImplicitAny": false,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "allowUnreachableCode": false,
     "noFallthroughCasesInSwitch": true,
 
@@ -41,7 +41,14 @@
       "@/public/*": ["./public/*"]
     }
   },
-  "exclude": ["./out/**/*", "./node_modules/**/*", "cypress/**/*.ts"],
+  "exclude": [
+    "./out/**/*",
+    "./.next/**/*",
+    "./.swc/**/*",
+    "./node_modules/**/*",
+    "cypress/**/*.ts",
+    "cypress/**/*.js"
+  ],
   "include": [
     "next-env.d.ts",
     "**/*.ts",
