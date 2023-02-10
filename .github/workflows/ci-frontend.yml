@@ -107,7 +107,7 @@ jobs:
           build: pnpm build
           start: pnpm e2e:headless
           wait-on: 'http://localhost:3000'
-          install: false
+          install: true
 
       - uses: actions/upload-artifact@v3
         if: failure()
