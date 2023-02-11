@@ -131,12 +131,12 @@ jobs:
       - name: Check size for Frontend image
         uses: wemake-services/docker-image-size-limit@master
         with:
-          image: chatfrontend:latest
+          image: chatting-platform-chatfrontend
           size: 2GB
       - name: Check size for Backend image
         uses: wemake-services/docker-image-size-limit@master
         with:
-          image: chatbackend:latest
+          image: chatting-platform-chatbackend
           size: 2GB
       - name: Wait for Frontend container to start or error out
         uses: cygnetdigital/wait_for_response@v2.0.0
