@@ -3,7 +3,7 @@ on:
   repository_dispatch:
     types: [semantic-release]
   workflow_run:
-    workflows: [CI-backend, CI-frontend]
+    workflows: [CI-backend, CI-frontend, CI-docker]
     branches: [master, beta, alpha]
     types: 
       - completed
