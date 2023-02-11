@@ -117,7 +117,9 @@ const Index = () => {
           // @ts-ignore
           return (
             <li key={room.name}>
-              <a href={`/room/${room.name}`}>{room.name}</a>
+              <a href={`/room/${room.name}`} id={`room-${room.name}`}>
+                {room.name}
+              </a>
             </li>
           );
         })}

@@ -116,13 +116,6 @@ const RoomPage = (
     // clear up after
     return () => socketRef.current.disconnect();
   }, [roomName]);
-  const sendMessage = (e) => {
-    e.preventDefault();
-    console.log(e);
-    const message = e.target.target[0];
-    console.log(`sending ${message} to room ${roomName}`);
-    socketRef.current.emit('message', message, null, roomName);
-  };
   const handleRoomJoined = (room: Room) => {
     console.log(room);
     roomName = room.name;
@@ -395,19 +388,6 @@ const RoomPage = (
     console.log('kicked noob');
   };
   const videoRef = useRef(null);
-
-  const getVideo = () => {
-    navigator.mediaDevices
-      .getUserMedia({ audio: true, video: true })
-      .then((stream) => {
-        const video = videoRef.current;
-        video.srcObject = stream;
-        video.play();
-      })
-      .catch((err) => {
-        console.error('error:', err);
-      });
-  };
   const checkForVideoAudioAccess = async () => {
     try {
       const cameraResult = await navigator.permissions.query({
@@ -456,15 +436,13 @@ const RoomPage = (
           title="You're the boss!"
           body="You can kick people you don't like if you want. If you need, you can always share the room link to invite a friend to chat with!"
         />
-      ) : !peersSocketId.length && !isLoading ? (
+      ) : (
         <p id="youJoinedNotCreated">
           you joined the room instead of CREATING ONE...
         </p>
-      ) : (
-        ''
       )}
       <div>
-        <h1 role="heading">Room name: {roomName || 'unknown'}</h1>
+        <h1 role="heading">Room name: {roomName}</h1>
         <div>
           <p
             style={{
@@ -482,7 +460,12 @@ const RoomPage = (
         <div>
           <p>(random dude from internet) {!hostRef.current ? '🤴👑' : ''}</p>
           <p>{peersSocketId ? `SocketId: ${peersSocketId}` : ''}</p>
-          <video autoPlay ref={peerVideoRef} />
+          <video
+            autoPlay
+            ref={peerVideoRef}
+            data-connected={!!peersSocketId.length}
+            id="peerVideo"
+          />
           {hostRef.current ? (
             <button onClick={kickUser} id="kickButton">
               kick this noob

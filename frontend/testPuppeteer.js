@@ -12,7 +12,7 @@ app.get('/connect', async (req, res) => {
   events.emit('connect', req, res);
 });
 events.on('connect', async (req, res) => {
-  const { url, message, kick, waitAfterSendingMessage } = req.query;
+  const { url, message, kick, waitAfterSendingMessage, leave } = req.query;
 
   // TODO: Use getBrowser.js from https://github.com/BrycensRanch/Focus-SIS/blob/feat/classroom-integration/getBrowser.js
   const browser = await puppeteer.launch({
@@ -33,7 +33,8 @@ events.on('connect', async (req, res) => {
     // eslint-disable-next-line no-promise-executor-return
     new Promise((r) => setTimeout(r, milliseconds));
   await wait(2500);
-  if (Array.isArray(message)) {
+  console.log(`sending message: ${message}`);
+  if (Array.isArray(message) && message.length && message !== 'undefined') {
     const promises = [];
 
     // eslint-disable-next-line no-restricted-syntax
@@ -46,7 +47,7 @@ events.on('connect', async (req, res) => {
       await page.click('#messageSend');
     }
     await Promise.all(promises);
-  } else {
+  } else if (message) {
     await page.type('#message', message);
     await page.click('#messageSend');
   }
@@ -55,10 +56,14 @@ events.on('connect', async (req, res) => {
     await wait(3000);
     await page.click('#kickButton');
   }
+  if (leave) {
+    await wait(1000);
+    await page.click('#leaveRoom');
+  }
   if (waitAfterSendingMessage && !kick) {
     // not a bug, it's a feature!
-    await wait(2500);
     await res.send('ok');
+    await wait(2500);
     await browser.close();
   } else if (kick) {
     await browser.close();
