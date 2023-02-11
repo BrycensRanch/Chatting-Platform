@@ -21,8 +21,8 @@
     <a aria-label="Docker Build Status" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ci-docker.yml">
       <img alt="Docker Workflow Status" src="https://img.shields.io/github/actions/workflow/status/BrycensRanch/Chatting-Platform/ci-docker.yml?label=Docker&logo=github&style=for-the-badge">
     </a>
-    <a aria-label="Frontend Code Coverage" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ci-backend.yml">
-      <img alt="Codecov" src="https://img.shields.io/codecov/c/github/BrycensRanch/Chatting-Platform?flag=unittests&label=FRONTEND%20UNIT%20TESTS%20COVERAGE&logo=codecov&style=for-the-badge">
+    <a aria-label="Frontend Code Coverage" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ci-frontend.yml">
+      <img alt="Codecov" src="https://img.shields.io/codecov/c/github/BrycensRanch/Chatting-Platform?flag=unittests&label=FRONTEND%20COVERAGE&logo=codecov&style=for-the-badge">
     </a>
     <a aria-label="Backend Code Coverage" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ci-backend.yml">
       <img alt="Coveralls" src="https://img.shields.io/coverallsCoverage/github/BrycensRanch/Chatting-Platform?label=BACKEND%20UNIT%20tests%20COVERAGE&style=for-the-badge">
