@@ -65,6 +65,7 @@ describe('Navigation', () => {
       cy.request(
         `http://localhost:8081/connect?url=http://localhost:3000/room/${roomName}&waitAfterSendingMessage=true`
       );
+      cy.get('#medalDismiss').click();
       cy.get('#message').type('SEE YA LATA ALLEGATOR >:)');
       cy.get('#messageSend').click({ force: true });
       cy.get('#toggleMic').click({ force: true });
