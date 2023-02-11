@@ -34,7 +34,7 @@
     "commitizen": "^4.3.0",
     "commitlint-config-monorepo": "^2.0.2",
     "concurrently": "^7.6.0",
-    "execa": "^6.1.0",
+    "execa": "^7.0.0",
     "husky": "^8.0.3",
     "ignore-walk": "^6.0.1",
     "lint-staged": "^13.1.1",
