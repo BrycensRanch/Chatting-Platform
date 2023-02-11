@@ -1,0 +1,150 @@
+name: CI-docker
+
+on:
+  workflow_run:
+    workflows: [CI-backend, CI-frontend, Hodolint]
+    types: 
+      - completed
+  # push:
+  #   branches:
+  #     - "*"
+    # Only consider those paths to trigger the action
+  #   paths:
+  #     - '**/Dockerfile'
+  #     - '**/docker-compose.{yaml,yml}'
+  #     - '.github/**'
+
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - synchronize
+  #     - reopened
+  #   # Only consider those paths to trigger the action
+  #   paths:
+  #     - '/**/Dockerfile'
+  #     - '/**/docker-compose.{yaml,yml}'
+  #     - '.github/**'
+  #   paths:
+  #     - 'backend/**'
+  #     - 'frontend/**'
+  #     - '.github/**'
+
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - synchronize
+  #     - reopened
+  #   # Only consider those paths to trigger the action
+  #   paths:
+  #     - 'backend/**'
+  #     - 'frontend/**'
+  #     - '.github/**'
+
+jobs:
+  build-and-test-backend:
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+
+    runs-on: ${{ matrix.os }}
+    # services:
+    #   # Label used to access the service container
+    #   redis:
+    #     # Docker Hub image
+    #     image: redis:alpine
+    #     # Set health checks to wait until redis has started
+    #     options: >-
+    #       --health-cmd "redis-cli ping"
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #     ports:
+    #       # Maps port 6379 on service container to the host
+    #       - 6379:6379
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+        
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js 
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: 📥 Monorepo install all deps & pnpm
+        uses: ./.github/actions/pnpm-install
+
+      # see https://github.com/vercel/next.js/pull/27362
+      - name: Restore backend build from cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/backend/dist
+            ~/.cache
+            ${{ github.workspace }}/.cache
+            ${{ github.workspace }}/**/tsconfig.tsbuildinfo
+          key: ${{ runner.os }}-backend-${{ hashFiles('**/pnpm.lock') }}-${{ hashFiles('backend/src/**.[jt]s?', 'backend/src/**.json') }}
+          restore-keys: |
+            ${{ runner.os }}-backend-${{ hashFiles('**/pnpm.lock') }}-
+
+      - name: Build Backend
+        working-directory: backend
+        run: |
+          pnpm build
+      - name: Restore frontend build from cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/frontend/.next/cache
+            ${{ github.workspace }}/.cache
+            ~/.cache
+            ${{ github.workspace }}/**/tsconfig.tsbuildinfo
+          key: ${{ runner.os }}-frontend-${{ hashFiles('**/pnpm.lock') }}-${{ hashFiles('frontend/src/**.[jt]sx?', 'frontend/src/**.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-app-${{ hashFiles('**/pnpm.lock') }}-
+      - name: Build Frontend
+        working-directory: frontend
+        run: |
+          pnpm build
+        env:
+          NEXTJS_SENTRY_UPLOAD_DRY_RUN: true
+          NODE_ENV: production
+          REDIS_PASSWORD: ${{ vars.GITHUB_SHA }}
+          DB_PASSWORD: ${{ vars.GITHUB_SHA }} # totally secure
+          REDIS_URL: "redis://:${REDIS_PASSWORD}@host.docker.internal:6379"
+      - name: 🚀Rename .env.example
+        run: |
+          mv .env.example .env
+      # Pull the latest image to build, and avoid caching pull-only images.
+      # (docker pull is faster than caching in most cases.)
+      - name: Pull Docker images
+        run: docker-compose pull
+
+      # In this step, this action saves a list of existing images,
+      # the cache is created without them in the post run.
+      # It also restores the cache if it exists.
+      - name: Cache Docker images
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        # Ignore the failure of a step and avoid terminating the job.
+        continue-on-error: true
+
+      - name: Start Chatting Platform Docker Compose
+        run: pnpm docker-start
+      - name: Wait for Frontend container to start or error out
+        uses: cygnetdigital/wait_for_response@v2.0.0
+        with:
+          url: 'http://localhost:3000/'
+          responseCode: '200,500'
+          timeout: 30000
+          interval: 500
+      - name: Wait for Backend container to start or error out
+        uses: cygnetdigital/wait_for_response@v2.0.0
+        with:
+          url: 'http://localhost:8000/'
+          responseCode: '200,500'
+          timeout: 30000
+          interval: 500
