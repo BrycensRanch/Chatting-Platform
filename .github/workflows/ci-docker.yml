@@ -41,7 +41,7 @@ on:
   #     - '.github/**'
 
 jobs:
-  build-and-test-backend:
+  build-and-test-docker:
     timeout-minutes: 10
     strategy:
       fail-fast: false
