@@ -17,18 +17,9 @@ app.prepare().then(() => {
       // Be sure to pass `true` as the second argument to `url.parse`.
       // This tells it to parse the query portion of the URL.
       const parsedUrl = parse(req.url, true);
-      const { pathname } = parsedUrl;
       const publicFolderPath = join(__dirname, 'public');
       app.serveStatic(req, res, publicFolderPath);
-      if (
-        pathname === '/sw.js' ||
-        /^\/(workbox|worker|fallback)-\w+\.js$/.test(pathname)
-      ) {
-        const filePath = join(__dirname, '.next', pathname);
-        app.serveStatic(req, res, filePath);
-      } else {
-        await handle(req, res, parsedUrl);
-      }
+      await handle(req, res, parsedUrl);
     } catch (err) {
       console.error('Error occurred handling', req.url, err);
       res.statusCode = 500;
