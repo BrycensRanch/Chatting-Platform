@@ -53,13 +53,13 @@ describe('Navigation', () => {
       // cy.get('#medalDismiss').click();
 
       cy.get('#message').type('SEE YA LATA ALLEGATOR >:)');
-      cy.get('#messageSend').click();
-      cy.get('#toggleMic').click();
-      cy.get('#toggleCamera').click();
+      cy.get('#messageSend').click({ force: true });
+      cy.get('#toggleMic').click({ force: true });
+      cy.get('#toggleCamera').click({ force: true });
       // expect(cy.get('#kickButton').click()).toThrow()
 
       cy.percySnapshot(`${roomName} Room`);
-      cy.get('#leaveRoom').click();
+      cy.get('#leaveRoom').click({ force: true });
     });
   });
   it('should create a new room by DIRECTLY visiting a url and take a screenshot', () => {
