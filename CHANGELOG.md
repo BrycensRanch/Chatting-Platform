@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.0.2...v1.0.3) (2023-02-11)
+
+
+### Bug Fixes
+
+* **docker:** run health checks on env variables ([e054c05](https://github.com/BrycensRanch/Chatting-Platform/commit/e054c05d7c11d96bbac99f897be88fad11a2920b))
+
 ## [1.0.2](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.0.1...v1.0.2) (2023-02-10)
 
 
