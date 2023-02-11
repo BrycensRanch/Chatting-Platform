@@ -27,7 +27,7 @@
     <a aria-label="Backend Code Coverage" href="https://github.com/BrycensRanch/Chatting-Platform/actions?query=workflow%3ci-backend.yml">
       <img alt="Coveralls" src="https://img.shields.io/coverallsCoverage/github/BrycensRanch/Chatting-Platform?label=BACKEND%20UNIT%20tests%20COVERAGE&style=for-the-badge">
     </a>
-    <a aria-label="Licence" href="https://github.com/BrycensRanch/Chatting-Platform/blob/main/LICENSE">
+    <a aria-label="Licence" href="https://github.com/BrycensRanch/Chatting-Platform/blob/master/LICENSE">
       <img alt="Licence" src="https://img.shields.io/github/license/BrycensRanch/Chatting-Platform?style=for-the-badge&labelColor=000000" />
     </a>
     <a aria-label="CodeFactor Grade" href="https://www.codefactor.io/repository/github/brycensranch/chatting-platform">
