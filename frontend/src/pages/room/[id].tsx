@@ -432,7 +432,7 @@ const RoomPage = (
   }, [videoRef]);
   const onSubmit = (e) => {
     e.preventDefault();
-    if (!input?.length) alert('please type in msg before sending');
+    if (!input?.length) console.error('please type in msg before sending');
     console.log(`sending message "${input}" to room ${roomName}`);
     socketRef.current?.emit('message', input);
     setInput('');
@@ -484,18 +484,20 @@ const RoomPage = (
           <p>{peersSocketId ? `SocketId: ${peersSocketId}` : ''}</p>
           <video autoPlay ref={peerVideoRef} />
           {hostRef.current ? (
-            <button onClick={kickUser}>kick this noob</button>
+            <button onClick={kickUser} id="kickButton">
+              kick this noob
+            </button>
           ) : (
             ''
           )}
         </div>
-        <button onClick={toggleMic} type="button">
+        <button onClick={toggleMic} id="toggleMic" type="button">
           {micActive ? 'Mute Mic' : 'UnMute Mic'}
         </button>
-        <button onClick={leaveRoom} type="button">
+        <button onClick={leaveRoom} id="leaveRoom" type="button">
           Leave
         </button>
-        <button onClick={toggleCamera} type="button">
+        <button onClick={toggleCamera} id="toggleCamera" type="button">
           {cameraActive ? 'Stop Camera' : 'Start Camera'}
         </button>
         <form onSubmit={onSubmit}>

@@ -1,4 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const puppeteer = require('puppeteer');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const express = require('express');
 const { EventEmitter } = require('events');
 const path = require('path');
@@ -6,14 +8,13 @@ const path = require('path');
 const app = express();
 const events = new EventEmitter();
 
-let socket;
-
 app.get('/connect', async (req, res) => {
   events.emit('connect', req, res);
 });
 events.on('connect', async (req, res) => {
-  const { url } = req.query;
-  const { message } = req.query;
+  const { url, message, kick, waitAfterSendingMessage } = req.query;
+
+  // TODO: Use getBrowser.js from https://github.com/BrycensRanch/Focus-SIS/blob/feat/classroom-integration/getBrowser.js
   const browser = await puppeteer.launch({
     args: [
       `--use-fake-device-for-media-stream`,
@@ -31,7 +32,7 @@ events.on('connect', async (req, res) => {
   const wait = (milliseconds) =>
     // eslint-disable-next-line no-promise-executor-return
     new Promise((r) => setTimeout(r, milliseconds));
-  await wait(10000);
+  await wait(2500);
   if (Array.isArray(message)) {
     const promises = [];
 
@@ -49,7 +50,21 @@ events.on('connect', async (req, res) => {
     await page.type('#message', message);
     await page.click('#messageSend');
   }
-  await res.send('ok');
-  await browser.close();
+  if (kick) {
+    await res.send('ok');
+    await wait(3000);
+    await page.click('#kickButton');
+  }
+  if (waitAfterSendingMessage && !kick) {
+    // not a bug, it's a feature!
+    await wait(2500);
+    await res.send('ok');
+    await browser.close();
+  } else if (kick) {
+    await browser.close();
+  } else {
+    await res.send('ok');
+    await browser.close();
+  }
 });
 app.listen(8081, () => {});
