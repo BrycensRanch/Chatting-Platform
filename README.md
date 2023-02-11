@@ -37,6 +37,9 @@
 
 ## Project Goals
 
+- Chat Notifications
+- Chat sound effect
+- Adopt Omegle styling 
 - Voice calling (`✅`)
 - Messages with Tenor GIFs built in, along with images stored on the server.
 - Video calls with screen sharing using WASM
