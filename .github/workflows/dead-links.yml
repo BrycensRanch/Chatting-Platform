@@ -14,10 +14,23 @@ on:
     #        │  │ │ │ │
     #        *  * * * *
     - cron: '30 1 * * 0'
-name: ci
+name: dead links destroyer
 jobs:
   linkinator:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: JustinBeckwith/linkinator-action@v1
+  crawl_for_broken_links:
+    runs-on: ubuntu-latest
+    name: Broken-Links-Crawler
+    steps:
+    - name: Checking links
+      id: checking
+      uses: ScholliYT/Broken-Links-Crawler-Action@v3
+      with:
+        website_url: 'https://chatting-platform-frontend.vercel.app'
+        exclude_url_prefix: 'mailto:,https://www.linkedin.com,https://linkedin.com,https://twitter.com'
+        verbose: 'true'
+        max_retry_time: 30
+        max_retries: 5
