@@ -11,35 +11,69 @@ describe('Navigation', () => {
 
       cy.percySnapshot('Homepage');
     });
-    it('should log coverage', () => {
-      console.log(global.__coverage__);
-    });
-    it('should create a new room by DIRECTLY visiting a url and take a screenshot', () => {
-      const roomName = 'testing';
-      cy.visit(`/room/${roomName}`);
+    it('should create a new room by typing the room name and take a screenshot', () => {
+      const roomName = Date.now().toString();
+      cy.visit(`/`);
 
       // Wait until the page is displayed
-      cy.findByRole('heading', {
-        name: `Room name: ${roomName}`,
-      });
+      cy.findByTestId('roomName').get('input').type(roomName);
+      cy.get('#joinOrCreateRoomButton').click();
 
-      cy.percySnapshot('Testing Room');
+      cy.title().should('contain', roomName);
+
+      cy.get('#medalDismiss').click();
+
+      cy.percySnapshot(`${roomName} Room`);
     });
   });
+
   describe('Checking connectivity', () => {
     const roomName = 'testing connectivity';
-    before(() => {
-      cy.visit(`/room/${roomName}`);
-    });
+    // before(() => {
+    //   cy.visit(`/room/${roomName}`);
+    // });
     it('should join a room and request for puppeteer to join too and screenshot', () => {
       cy.request(
-        `http://localhost:8081/connect?url=http://localhost:3000/room/${roomName}&message=freedom1&message=freedom2`
+        `http://localhost:8081/connect?url=http://localhost:3000/room/${roomName}&message=freedom1&message=freedom2&kick=true`
       );
+      cy.visit(`/room/${roomName}`);
       cy.percySnapshot(`${roomName} with puppeteer`);
     });
+    it('nav to a room and kick nobody', () => {
+      cy.visit(`/room/${roomName}`);
 
-    // it('should check connectivity with socket io server', () => {
+      // expect(
+      //   cy.request(
+      //     `http://localhost:8081/connect?url=http://localhost:3000/room/${roomName}&message=freedom1&message=freedom2&waitAfterSendingMessage=true`,
+      //     {
+      //       failOnStatusCode: false,
+      //     }
+      //   )
+      // ).to.throw();
+      // cy.get('#medalDismiss').click();
 
-    // })
+      cy.get('#message').type('SEE YA LATA ALLEGATOR >:)');
+      cy.get('#messageSend').click();
+      cy.get('#toggleMic').click();
+      cy.get('#toggleCamera').click();
+      // expect(cy.get('#kickButton').click()).toThrow()
+
+      cy.percySnapshot(`${roomName} Room`);
+      cy.get('#leaveRoom').click();
+    });
   });
+  it('should create a new room by DIRECTLY visiting a url and take a screenshot', () => {
+    const roomName = 'testing';
+    cy.visit(`/room/${roomName}`);
+
+    // Wait until the page is displayed
+    cy.findByRole('heading', {
+      name: `Room name: ${roomName}`,
+    });
+
+    cy.percySnapshot('Testing Room');
+  });
+  // it('should check connectivity with socket io server', () => {
+
+  // })
 });
