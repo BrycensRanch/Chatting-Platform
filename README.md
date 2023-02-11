@@ -37,14 +37,13 @@
 
 ## Project Goals
 
-- Voice calling
+- Voice calling (`✅`)
 - Messages with Tenor GIFs built in, along with images stored on the server.
-- Authentication with SuperTokens
 - Video calls with screen sharing using WASM
 - Fastify API that generates types and schemas and OpenAPI Specification files for the VSCode extension I'm using
 - Basic message encryption end to end?
 - Record content while in a call, like Google Meets, but clientside!
-- Switch to pnpm since a certain someone likes to run `npm install` a lot more than they should
+- Switch to pnpm since a certain someone likes to run `npm install` a lot more than they should (`✅`)
 
 ### Planned Technology Stack
 
