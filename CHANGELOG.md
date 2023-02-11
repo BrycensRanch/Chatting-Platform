@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.0.3...v1.1.0) (2023-02-11)
+
+
+### Features
+
+* **frontend:** remove half baked pwa code ([#25](https://github.com/BrycensRanch/Chatting-Platform/issues/25)) ([d25a24d](https://github.com/BrycensRanch/Chatting-Platform/commit/d25a24df7872936df04b433be2901ee78ccb2d93))
+
 ## [1.0.3](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.0.2...v1.0.3) (2023-02-11)
 
 
