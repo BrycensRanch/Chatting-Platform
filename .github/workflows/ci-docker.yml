@@ -2,17 +2,19 @@ name: CI-docker
 
 on:
   workflow_run:
-    workflows: [CI-backend, CI-frontend, Hodolint]
+    workflows: [CI-frontend]
     types: 
       - completed
-  # push:
-  #   branches:
-  #     - "*"
+  push:
+    branches:
+      - "*"
     # Only consider those paths to trigger the action
-  #   paths:
-  #     - '**/Dockerfile'
-  #     - '**/docker-compose.{yaml,yml}'
-  #     - '.github/**'
+    paths:
+      - '**/Dockerfile'
+      - '**/docker-compose.{yaml,yml}'
+      - '**/package-json'
+      - '**/pnpm-lock.yaml'
+      - '.github/**'
 
   # pull_request:
   #   types:
