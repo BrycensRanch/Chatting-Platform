@@ -18,9 +18,9 @@
     [
       "@semantic-release/github",
       {
-        assets: [],
-        releasedLabels: true,
-      },
-    ],
+        "assets": [],
+        "releasedLabels": true
+      }
+    ]
   ]
 }
