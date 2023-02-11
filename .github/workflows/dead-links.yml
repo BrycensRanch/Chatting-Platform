@@ -23,7 +23,7 @@ jobs:
       - uses: JustinBeckwith/linkinator-action@v1
   await-for-vercel-deployment:
     name: Await current deployment to be ready (Ubuntu 18.04)
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Resolving deployment url from Vercel
         id: resolve-deployment
@@ -64,7 +64,7 @@ jobs:
       - name: Display deployment status
         run: "echo My deployment is ${{ fromJson(steps.await-vercel.outputs.deploymentDetails).readyState }}"
     outputs:
-      VERCEL_DEPLOYMENT: ${{ steps.resolve-deployment.outputs.VERCEL_DEPLOYMENT }}
+      VERCEL_DEPLOYMENT: ${{ steps.resolve-deployment.outputs.VERCEL_DEPLOYMENT_URL }}
   crawl_for_broken_links:
     runs-on: ubuntu-latest
     name: Broken-Links-Crawler
