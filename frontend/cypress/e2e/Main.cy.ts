@@ -78,6 +78,9 @@ describe('Navigation', () => {
         `http://localhost:8081/connect?url=http://localhost:3000/room/${roomName}&waitAfterSendingMessage=true`
       );
       cy.visit('/');
+      cy.request(
+        `http://localhost:8081/connect?url=http://localhost:3000/room/${roomName}&waitAfterSendingMessage=true`
+      );
       cy.get(`#room-${roomName}`).click({ force: true });
       cy.title().should('contain', roomName);
       cy.get('#youJoinedNotCreated').should('contain', 'joined');
@@ -89,8 +92,6 @@ describe('Navigation', () => {
       cy.request(
         `http://localhost:8081/connect?url=http://localhost:3000/room/${roomsThatPuppeteerWillLeave[0]}&waitAfterSendingMessage=true`
       );
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(3000);
       cy.get('#kickButton').click({ force: true });
       cy.visit(`/room/${roomsThatPuppeteerWillLeave[1]}`);
       cy.request(
