@@ -21,4 +21,6 @@ tasks:
       echo 'pinentry-mode loopback' >> ~/.gnupg/gpg.conf
   - init: pnpm install 
     command: cp .env.example .env && pnpm build && pnpm dev
-image: nberlette/gitpod-enhanced
+    
+# security issues, unauthorised commits to our repository 
+# image: nberlette/gitpod-enhanced
