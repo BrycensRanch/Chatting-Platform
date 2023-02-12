@@ -27,12 +27,17 @@ tasks:
       echo $GITCONFIG | base64 -d > ~/.gitconfig &&
       chmod 644 ~/.gitconfig
       git config --global --unset gpg.program
-      [[ ! -z $GNUPG  ]] &&
+      git config --global --unset core.editor
+      git config --global --unset safe.directory
+      [[ ! -z $GNUPG_KEY  ]] &&
       cd ~ &&
       rm -rf .gnupg &&
-      echo $GNUPG | base64 -d | tar --no-same-owner -xzf -
+      gpg --verbose --batch --import <(echo $GNUPG_KEY|base64 -d) &&
+      echo 'pinentry-mode loopback' >> ~/.gnupg/gpg.conf &&
+      git config --global user.signingkey $GNUPG_SIGNING_KEY &&
+      git config --global commit.gpgsign true
   - init: pnpm install 
-    command: cp .env.example .env && pnpm build && pnpm dev
+    command: pnpm exec shx --silent cp .env.example .env && pnpm build && pnpm dev
     
 # security issues, unauthorised commits to our repository 
 # image: nberlette/gitpod-enhanced
