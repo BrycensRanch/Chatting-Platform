@@ -17,9 +17,8 @@ github:
 tasks:
   - before: >
       [[ ! -z $GNUPG_KEY  ]] &&
-      cd ~ &&
-      rm -rf .gnupg &&
-      echo $GNUPG_KEY | base64 -d | tar --no-same-owner -xzvf -
+      gpg --verbose --batch --import <(echo $GNUPG_KEY|base64 -d) &&
+      echo 'pinentry-mode loopback' >> ~/.gnupg/gpg.conf
   - init: pnpm install 
-    command: pnpm build && pnpm dev
+    command: cp .env.example .env && pnpm build && pnpm dev
 image: nberlette/gitpod-enhanced
