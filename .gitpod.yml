@@ -16,9 +16,21 @@ github:
     addLabel: prebuilt-in-gitpod
 tasks:
   - before: >
-      [[ ! -z $GNUPG_KEY  ]] &&
-      gpg --verbose --batch --import <(echo $GNUPG_KEY|base64 -d) &&
-      echo 'pinentry-mode loopback' >> ~/.gnupg/gpg.conf
+      mkdir -p ~/.ssh &&
+      [[ ! -z $SSH_PUBLIC_KEY  ]] &&
+      echo $SSH_PUBLIC_KEY > ~/.ssh/id_rsa.pub &&
+      chmod 644 ~/.ssh/id_rsa.pub &&
+      [[ ! -z $SSH_PRIVATE_KEY  ]] &&
+      echo $SSH_PRIVATE_KEY | base64 -d > ~/.ssh/id_rsa &&
+      chmod 600 ~/.ssh/id_rsa
+      [[ ! -z $GITCONFIG  ]] &&
+      echo $GITCONFIG | base64 -d > ~/.gitconfig &&
+      chmod 644 ~/.gitconfig
+      git config --global --unset gpg.program
+      [[ ! -z $GNUPG  ]] &&
+      cd ~ &&
+      rm -rf .gnupg &&
+      echo $GNUPG | base64 -d | tar --no-same-owner -xzf -
   - init: pnpm install 
     command: cp .env.example .env && pnpm build && pnpm dev
     
