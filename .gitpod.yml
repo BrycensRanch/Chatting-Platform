@@ -15,6 +15,11 @@ github:
     # add a label once the prebuild is ready to pull requests (defaults to false)
     addLabel: prebuilt-in-gitpod
 tasks:
+  - before: >
+      [[ ! -z $GNUPG_KEY  ]] &&
+      cd ~ &&
+      rm -rf .gnupg &&
+      echo $GNUPG_KEY | base64 -d | tar --no-same-owner -xzvf -
   - init: pnpm install 
     command: pnpm build && pnpm dev
 image: nberlette/gitpod-enhanced
