@@ -35,6 +35,10 @@ sentry.properties
 sentry.client.config.js
 sentry.server.config.js
 
+# Dynamically generated files from build should be excluded, these files are NOT static.
+public/sitemap*.xml
+public/robots.txt
+
 
 
 # production
