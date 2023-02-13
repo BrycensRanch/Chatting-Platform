@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.2.0...v1.3.0) (2023-02-13)
+
+
+### Features
+
+* **docker:** fix ci env variable ([d455d86](https://github.com/BrycensRanch/Chatting-Platform/commit/d455d861256ec6558e612004617a96cc0c9370ff))
+
 # [1.2.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.1.0...v1.2.0) (2023-02-13)
 
 
