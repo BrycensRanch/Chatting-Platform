@@ -13,12 +13,20 @@
     "@semantic-release/changelog",
     "@semantic-release/git",
     {
-      "assets": ["**/pnpm-lock.yaml", "**/package.json"]
+      "assets": [
+        "pnpm-lock.yaml",
+        "package.json",
+        "/frontend/package.json",
+        "/backend/package.json"
+      ]
     },
     [
       "@semantic-release/github",
       {
-        "assets": [],
+        "assets": [
+          { "path": "backend/dist", "label": "Backend build" },
+          { "path": "frontend/.next", "label": "Frontend build" }
+        ],
         "releasedLabels": true
       }
     ]
