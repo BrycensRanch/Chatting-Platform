@@ -1,0 +1,15 @@
+# https://github.com/vercel/next.js/tree/canary/examples/with-docker
+Dockerfile
+.dockerignore
+node_modules
+npm-debug.log
+README.md
+# We're uh... using pre-existing build files then starting them.
+# This way, we don't install filthy development dependencies onto our pure, glorious, docker build
+# .next
+.git
+.vscode
+.husky
+dockerApp
+**/coverage
+**/cypress

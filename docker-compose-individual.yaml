@@ -94,19 +94,16 @@ services:
   #     interval: 10s
   #     timeout: 5s
   #     retries: 5
-  chattingplatform:
-    build: ./
-    depends_on:
-      - cache
+  chatfrontend:
+    build: ./frontend
+    # depends_on:
+    #   - cache
     #   - chatbackend 
     #   - supertokens 
     ports:
       - 3000:3000
-      - 8000:8000
     environment:
        NODE_ENV: production
-       CI: true
-       REDIS_URL: redis://:${REDIS_PASSWORD}@host.docker.internal:6379
     networks:
       - app_network
     restart: unless-stopped
@@ -116,26 +113,26 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  # chatbackend:
-  #   build: ./backend
-  #   depends_on:
-  #     - cache
-  #     # - supertokens 
-  #     # - db 
-  #   ports:
-  #     - 8000:8000
-  #   networks:
-  #     - app_network
-  #   environment:
-  #     - NODE_ENV=production
-  #     - REDIS_URL=redis://:${REDIS_PASSWORD}@host.docker.internal:6379
-  #   restart: unless-stopped
-  #   healthcheck:
-  #     test: >
-  #       bash -c 'npm run healthcheck'
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
+  chatbackend:
+    build: ./backend
+    depends_on:
+      - cache
+      # - supertokens 
+      # - db 
+    ports:
+      - 8000:8000
+    networks:
+      - app_network
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@host.docker.internal:6379
+    restart: unless-stopped
+    healthcheck:
+      test: >
+        bash -c 'npm run healthcheck'
+      interval: 10s
+      timeout: 5s
+      retries: 5
   # nginx:
   #   build: ./Nginx
   #   ports:
