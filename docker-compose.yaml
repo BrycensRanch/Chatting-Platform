@@ -105,7 +105,7 @@ services:
       - 8000:8000
     environment:
        NODE_ENV: production
-       CI: true
+       CI: "true"
        REDIS_URL: redis://:${REDIS_PASSWORD}@host.docker.internal:6379
     networks:
       - app_network
