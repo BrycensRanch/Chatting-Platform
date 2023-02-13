@@ -36,13 +36,37 @@ ENV NODE_ENV=production
 ENV PNPM_HOME=/home/nodejs/.local/share/pnpm    
 ENV PATH=$PATH:$PNPM_HOME   
 
-COPY --chown=nodejs:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml dockerStartServices.mjs ./
+COPY --chown=nodejs:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml dockerStartServices.mjs docker_build_and_install.sh ./
 
 
-# Install dependencies based on the preferred package manager
-COPY --chown=nodejs:nodejs frontend/*.json ./frontend
-COPY --chown=nodejs:nodejs frontend/*.config.js ./frontend
+# Non built files first
+COPY --chown=nodejs:nodejs frontend/*.json ./frontend/
+COPY --chown=nodejs:nodejs frontend/*.config.js ./frontend/
 COPY --chown=nodejs:nodejs frontend/server.js ./frontend
+COPY --chown=nodejs:nodejs .env* ./
+COPY --chown=nodejs:nodejs frontend/healthCheck.js ./frontend/healthCheck.js
+COPY --chown=nodejs:nodejs frontend/.env* ./frontend/
+COPY --chown=nodejs:nodejs backend/*.json ./backend/
+COPY --chown=nodejs:nodejs backend/.env* ./backend/
+# Technically, this file is already on the system, but this is just for consistency's sake
+COPY --chown=nodejs:nodejs backend/pm2.config.js* ./backend
+
+
+RUN mkdir -p /home/nodejs/app/scripts
+COPY --chown=nodejs:nodejs docker_build_and_install.sh /home/nodejs/app/scripts
+WORKDIR /home/nodejs/app/scripts
+
+# Couldn't find a `pages` directory. Please create one under the project root
+COPY --chown=nodejs:nodejs frontend/src /home/nodejs/app/frontend/src
+COPY --chown=nodejs:nodejs frontend/public /home/nodejs/app/frontend/public
+COPY --chown=nodejs:nodejs frontend/__mocks__ /home/nodejs/app/frontend/__mocks__
+
+
+
+RUN chmod +x docker_build_and_install.sh
+RUN ./docker_build_and_install.sh
+WORKDIR /home/nodejs/app
+
 
 # Production image, copy all the files and run next
 # FROM timbru31/node-alpine-git:hydrogen AS runner
@@ -50,22 +74,15 @@ COPY --chown=nodejs:nodejs frontend/server.js ./frontend
 # COPY --chown=nodejs:nodejs node_modules ./node_modules
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --chown=nodejs:nodejs frontend/.next ./frontend/.next
-COPY --chown=nodejs:nodejs .env* ./
-COPY --chown=nodejs:nodejs frontend/healthCheck.js ./frontend/healthCheck.js
-COPY --chown=nodejs:nodejs frontend/.env* ./frontend
+COPY --chown=nodejs:nodejs frontend ./frontend
 
-COPY --chown=nodejs:nodejs backend/*.json ./backend
 # COPY --chown=nodejs:nodejs backend/dist/* ./backend
 # # Repetitive, ik. For compatability reasons
 # COPY --chown=nodejs:nodejs backend/dist/* ./
-COPY --chown=nodejs:nodejs backend/dist ./backend/dist
+COPY --chown=nodejs:nodejs backend ./backend
 
 
 # COPY --chown=nodejs:nodejs healthCheck.js .
-COPY --chown=nodejs:nodejs backend/.env* ./backend
-# Technically, this file is already on the system, but this is just for consistency's sake
-COPY --chown=nodejs:nodejs backend/pm2.config.js* ./backend
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
