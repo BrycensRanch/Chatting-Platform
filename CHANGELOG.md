@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.1.0...v1.2.0) (2023-02-13)
+
+
+### Features
+
+* **docker:** monorepo dockerfile ([#38](https://github.com/BrycensRanch/Chatting-Platform/issues/38)) ([6c12e69](https://github.com/BrycensRanch/Chatting-Platform/commit/6c12e69cc0e72778863206536599adad72f0b16c))
+
 # [1.1.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.0.3...v1.1.0) (2023-02-11)
 
 
