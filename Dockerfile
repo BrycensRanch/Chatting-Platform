@@ -3,9 +3,9 @@
 FROM timbru31/node-alpine-git:hydrogen AS init 
 # update packages, to reduce risk of vulnerabilities
 # RUN apk update && apk upgrade
-RUN apk add bash
+RUN apk add --no-cache bash
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add libc6-compat
+RUN apk add --no-cache libc6-compat
 
 # RUN apk cache clean
 
