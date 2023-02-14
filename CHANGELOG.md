@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.4.2...v1.5.0) (2023-02-14)
+
+
+### Features
+
+* **repo:** add stackblitz support ([9579fa6](https://github.com/BrycensRanch/Chatting-Platform/commit/9579fa6d8bdf49fc063ae2016ea0797ad6f920f3))
+
 ## [1.4.2](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.4.1...v1.4.2) (2023-02-14)
 
 
