@@ -2,7 +2,7 @@
 # Image where Node 18 (LTS) alpine + git + ssh is installed
 FROM timbru31/node-alpine-git:hydrogen AS init 
 # update packages, to reduce risk of vulnerabilities
-# RUN apk update && apk upgrade
+RUN apk update && apk upgrade
 RUN apk add --no-cache bash
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
@@ -36,7 +36,7 @@ ENV NODE_ENV=production
 ENV PNPM_HOME=/home/nodejs/.local/share/pnpm    
 ENV PATH=$PATH:$PNPM_HOME   
 
-COPY --chown=nodejs:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml dockerStartServices.mjs docker_build_and_install.sh ./
+COPY --chown=nodejs:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml dockerStartServices.mjs dockerBuildAndInstall.mjs ./
 
 
 # Non built files first
@@ -52,20 +52,17 @@ COPY --chown=nodejs:nodejs backend/.env* ./backend/
 COPY --chown=nodejs:nodejs backend/pm2.config.js* ./backend
 
 
-RUN mkdir -p /home/nodejs/app/scripts
-COPY --chown=nodejs:nodejs docker_build_and_install.sh /home/nodejs/app/scripts
-WORKDIR /home/nodejs/app/scripts
+COPY --chown=nodejs:nodejs dockerBuildAndInstall.mjs /home/nodejs/app
 
 # Couldn't find a `pages` directory. Please create one under the project root
 COPY --chown=nodejs:nodejs frontend/src /home/nodejs/app/frontend/src
+COPY --chown=nodejs:nodejs backend /home/nodejs/app/backend
 COPY --chown=nodejs:nodejs frontend/public /home/nodejs/app/frontend/public
 COPY --chown=nodejs:nodejs frontend/__mocks__ /home/nodejs/app/frontend/__mocks__
 
 
 
-RUN chmod +x docker_build_and_install.sh
-RUN ./docker_build_and_install.sh
-WORKDIR /home/nodejs/app
+RUN node dockerBuildAndInstall.mjs
 
 
 # Production image, copy all the files and run next
