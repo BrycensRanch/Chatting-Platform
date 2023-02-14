@@ -2,7 +2,7 @@
 # Image where Node 18 (LTS) alpine + git + ssh is installed
 FROM timbru31/node-alpine-git:hydrogen AS init 
 # update packages, to reduce risk of vulnerabilities
-# RUN apk update && apk upgrade
+RUN apk update && apk upgrade
 RUN apk add --no-cache bash
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
@@ -36,13 +36,34 @@ ENV NODE_ENV=production
 ENV PNPM_HOME=/home/nodejs/.local/share/pnpm    
 ENV PATH=$PATH:$PNPM_HOME   
 
-COPY --chown=nodejs:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml dockerStartServices.mjs ./
+COPY --chown=nodejs:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml dockerStartServices.mjs dockerBuildAndInstall.mjs ./
 
 
-# Install dependencies based on the preferred package manager
-COPY --chown=nodejs:nodejs frontend/*.json ./frontend
-COPY --chown=nodejs:nodejs frontend/*.config.js ./frontend
+# Non built files first
+COPY --chown=nodejs:nodejs frontend/*.json ./frontend/
+COPY --chown=nodejs:nodejs frontend/*.config.js ./frontend/
 COPY --chown=nodejs:nodejs frontend/server.js ./frontend
+COPY --chown=nodejs:nodejs .env* ./
+COPY --chown=nodejs:nodejs frontend/healthCheck.js ./frontend/healthCheck.js
+COPY --chown=nodejs:nodejs frontend/.env* ./frontend/
+COPY --chown=nodejs:nodejs backend/*.json ./backend/
+COPY --chown=nodejs:nodejs backend/.env* ./backend/
+# Technically, this file is already on the system, but this is just for consistency's sake
+COPY --chown=nodejs:nodejs backend/pm2.config.js* ./backend
+
+
+COPY --chown=nodejs:nodejs dockerBuildAndInstall.mjs /home/nodejs/app
+
+# Couldn't find a `pages` directory. Please create one under the project root
+COPY --chown=nodejs:nodejs frontend/src /home/nodejs/app/frontend/src
+COPY --chown=nodejs:nodejs backend /home/nodejs/app/backend
+COPY --chown=nodejs:nodejs frontend/public /home/nodejs/app/frontend/public
+COPY --chown=nodejs:nodejs frontend/__mocks__ /home/nodejs/app/frontend/__mocks__
+
+
+
+RUN node dockerBuildAndInstall.mjs
+
 
 # Production image, copy all the files and run next
 # FROM timbru31/node-alpine-git:hydrogen AS runner
@@ -50,22 +71,15 @@ COPY --chown=nodejs:nodejs frontend/server.js ./frontend
 # COPY --chown=nodejs:nodejs node_modules ./node_modules
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --chown=nodejs:nodejs frontend/.next ./frontend/.next
-COPY --chown=nodejs:nodejs .env* ./
-COPY --chown=nodejs:nodejs frontend/healthCheck.js ./frontend/healthCheck.js
-COPY --chown=nodejs:nodejs frontend/.env* ./frontend
+COPY --chown=nodejs:nodejs frontend ./frontend
 
-COPY --chown=nodejs:nodejs backend/*.json ./backend
 # COPY --chown=nodejs:nodejs backend/dist/* ./backend
 # # Repetitive, ik. For compatability reasons
 # COPY --chown=nodejs:nodejs backend/dist/* ./
-COPY --chown=nodejs:nodejs backend/dist ./backend/dist
+COPY --chown=nodejs:nodejs backend ./backend
 
 
 # COPY --chown=nodejs:nodejs healthCheck.js .
-COPY --chown=nodejs:nodejs backend/.env* ./backend
-# Technically, this file is already on the system, but this is just for consistency's sake
-COPY --chown=nodejs:nodejs backend/pm2.config.js* ./backend
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
