@@ -19,7 +19,7 @@ if (process.env.CI) {
 }
 else {
   try {
-    if (process.stdout.isTTY) {
+    if (process.stdout.isTTY && process.env.GIT_PROXY?.includes("stackblitz")) {
       execPromise('docker compose up cache -d')
     }
     else {
