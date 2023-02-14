@@ -1,3 +1,15 @@
+# [1.4.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.3.0...v1.4.0) (2023-02-14)
+
+
+### Bug Fixes
+
+* **release:** update package.json files ([c33c79f](https://github.com/BrycensRanch/Chatting-Platform/commit/c33c79f7873d94fd0183c76c64438ea0b53adbfa))
+
+
+### Features
+
+* **docker:** railway dockerfile compat ([#39](https://github.com/BrycensRanch/Chatting-Platform/issues/39)) ([af5d2dc](https://github.com/BrycensRanch/Chatting-Platform/commit/af5d2dc2179b272597969c0d8775a4cf4a32cd7f))
+
 # [1.3.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.2.0...v1.3.0) (2023-02-13)
 
 
