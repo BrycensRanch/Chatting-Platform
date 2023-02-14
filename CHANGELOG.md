@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.4.1...v1.4.2) (2023-02-14)
+
+
+### Bug Fixes
+
+* **frontend:** properly detect backend server ([9eaed05](https://github.com/BrycensRanch/Chatting-Platform/commit/9eaed05f49c983f297938f95d149e497691018a8))
+
 ## [1.4.1](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.4.0...v1.4.1) (2023-02-14)
 
 
