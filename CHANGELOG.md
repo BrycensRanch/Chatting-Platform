@@ -1,3 +1,11 @@
+## [1.4.1](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.4.0...v1.4.1) (2023-02-14)
+
+
+### Bug Fixes
+
+* **docker:** fix deployment again ([0446d08](https://github.com/BrycensRanch/Chatting-Platform/commit/0446d0894b6db59fd9bf7715a066032978136b04))
+* **docker:** railway detection in deployment ([ed66563](https://github.com/BrycensRanch/Chatting-Platform/commit/ed66563d3eb5f3f6dfc3c5e1653cc042beb47732))
+
 # [1.4.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.3.0...v1.4.0) (2023-02-14)
 
 
