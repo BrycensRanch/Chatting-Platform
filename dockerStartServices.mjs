@@ -20,7 +20,6 @@ if (process.env.CI) {
 else {
   try {
     if (process.stdout.isTTY) {
-
       execPromise('docker compose up cache -d')
     }
     else {
