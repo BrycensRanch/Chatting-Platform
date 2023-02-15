@@ -10,14 +10,16 @@ require('dotenv-expand').expand(
   })
 );
 
-export const frontendPort =
-  process.env.FRONTEND_PORT || process.env.PORT || 3000;
+export const frontendPort = Number(
+  process.env.FRONTEND_PORT || process.env.PORT || 3000
+);
 
-export const backendPort =
+export const backendPort = Number(
   process.env.BACKEND_PORT ||
-  process.env.FASTIFY_PORT ||
-  process.env.PORT ||
-  8000;
+    process.env.FASTIFY_PORT ||
+    process.env.PORT ||
+    8000
+);
 
 export const frontendServerURL = new URL(
   process.env.GITPOD_WORKSPACE_URL &&
