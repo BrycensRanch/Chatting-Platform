@@ -20,7 +20,7 @@ const backendPort =
 
 const frontendServerURL = new URL(
   process.env.GITPOD_WORKSPACE_URL &&
-  process.env.FRONTEND_SERVER?.includes('localhost')
+  process.env.FRONTEND_SERVER.includes('localhost')
     ? new URL(
         `https://${frontendPort}-${
           new URL(process.env.GITPOD_WORKSPACE_URL).hostname
@@ -30,7 +30,7 @@ const frontendServerURL = new URL(
 ).origin;
 const backendServerURL = new URL(
   process.env.GITPOD_WORKSPACE_URL &&
-  process.env.NEXT_PUBLIC_BACKEND_SERVER?.includes('localhost')
+  process.env.NEXT_PUBLIC_BACKEND_SERVER.includes('localhost')
     ? new URL(
         `https://${backendPort}-${
           new URL(process.env.GITPOD_WORKSPACE_URL).hostname
