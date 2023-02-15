@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react-hooks/rules-of-hooks */
 // eslint-disable-next-line @next/next/no-document-import-in-page
 import { useRouter } from 'next/router';
@@ -11,7 +12,7 @@ import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
 import type { ClientToServerEvents, ServerToClientEvents } from '@/types';
 
-import { backendServerURL } from '../../constants';
+import { backendServerURL } from '../constants';
 
 export type Room = {
   name: string;

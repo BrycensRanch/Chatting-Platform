@@ -2,8 +2,8 @@
 import { createAdapter } from '@socket.io/redis-adapter';
 import { fastify } from 'fastify';
 import Redis from 'ioredis';
-import { backendPort } from './constants';
 
+import { backendPort, backendServerURL } from './constants';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import * as app from './init';
 
@@ -67,6 +67,9 @@ const start = async () => {
         (!process.env.NODE_APP_INSTANCE && process.env.NODE_ENV !== 'test')
       ) {
         console.log(`Server listening at ${address}`);
+        if (address !== backendServerURL) {
+          console.log(`or technically it's at ${backendServerURL}`);
+        }
 
         const socketIOOptions = {
           cors: {

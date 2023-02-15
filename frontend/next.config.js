@@ -161,5 +161,4 @@ if (process.env.NODE_ENV === 'production') {
 }
 BuildingConfig.build();
 
-BuildingConfig.configFactory = undefined;
 module.exports = BuildingConfig;
