@@ -38,7 +38,7 @@ tasks:
       git config --global user.signingkey $GNUPG_SIGNING_KEY &&
       git config --global commit.gpgsign true
   - init: pnpm install 
-    command: cp .env.example .env && pnpm build && pnpm dev
+    command: cp .env.example .env && docker compose up cache-d  && pnpm build && pnpm dev
 
 # security issues, unauthorised commits to our repository 
 image: BrycensRanch/gitpod-enhanced
