@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 // all of these are the default values...
 require('dotenv-expand').expand(require('dotenv-mono').load());
 
@@ -40,7 +41,7 @@ const backendServerURL = new URL(
 ).origin;
 // const frontendServerURL =
 
-module.exports = {
+export default {
   frontendServerURL,
   backendServerURL,
   frontendPort,

@@ -148,6 +148,7 @@ importers:
       '@testing-library/cypress': ^9.0.0
       '@testing-library/jest-dom': ^5.16.5
       '@testing-library/react': ^13.4.0
+      '@types/dotenv-defaults': ^2.0.1
       '@types/jest': ^29.4.0
       '@types/node': ^18.13.0
       '@types/react': ^18.0.28
@@ -236,6 +237,7 @@ importers:
       '@testing-library/cypress': 9.0.0_cypress@12.6.0
       '@testing-library/jest-dom': 5.16.5
       '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
+      '@types/dotenv-defaults': 2.0.1
       '@types/jest': 29.4.0
       '@types/node': 18.13.0
       '@types/react': 18.0.28
@@ -3307,11 +3309,17 @@ packages:
     dependencies:
       '@types/node': 18.13.0
 
+  /@types/dotenv-defaults/2.0.1:
+    resolution: {integrity: sha512-pH/45waKTwuwGszC893XdP9Dnj4LFtjranprQ7v3j6j4HdDyrhSF1ybHHWxZ2qp6KIrabN7zG3HeV4Y7OUVnww==}
+    dependencies:
+      dotenv: 8.6.0
+    dev: true
+
   /@types/eslint-scope/3.7.4:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
       '@types/eslint': 8.21.1
-      '@types/estree': 0.0.51
+      '@types/estree': 1.0.0
 
   /@types/eslint/8.21.1:
     resolution: {integrity: sha512-rc9K8ZpVjNcLs8Fp0dkozd5Pt2Apk1glO4Vgz8ix1u6yFByxfqo5Yavpy65o+93TAe24jr7v+eSBtFLvOQtCRQ==}
@@ -6113,6 +6121,11 @@ packages:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
     dev: false
+
+  /dotenv/8.6.0:
+    resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
+    engines: {node: '>=10'}
+    dev: true
 
   /duplexer/0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
