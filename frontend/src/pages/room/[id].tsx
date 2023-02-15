@@ -64,7 +64,7 @@ const RoomPage = (
 
   useEffect(() => {
     socketRef.current = io(
-      process.env.BACKEND_SERVER || 'http://localhost:8000',
+      process.env.NEXT_PUBLIC_BACKEND_SERVER || 'http://localhost:8000',
       {
         withCredentials: true,
       }
@@ -116,13 +116,6 @@ const RoomPage = (
     // clear up after
     return () => socketRef.current.disconnect();
   }, [roomName]);
-  const sendMessage = (e) => {
-    e.preventDefault();
-    console.log(e);
-    const message = e.target.target[0];
-    console.log(`sending ${message} to room ${roomName}`);
-    socketRef.current.emit('message', message, null, roomName);
-  };
   const handleRoomJoined = (room: Room) => {
     console.log(room);
     roomName = room.name;
@@ -395,19 +388,6 @@ const RoomPage = (
     console.log('kicked noob');
   };
   const videoRef = useRef(null);
-
-  const getVideo = () => {
-    navigator.mediaDevices
-      .getUserMedia({ audio: true, video: true })
-      .then((stream) => {
-        const video = videoRef.current;
-        video.srcObject = stream;
-        video.play();
-      })
-      .catch((err) => {
-        console.error('error:', err);
-      });
-  };
   const checkForVideoAudioAccess = async () => {
     try {
       const cameraResult = await navigator.permissions.query({
@@ -432,7 +412,7 @@ const RoomPage = (
   }, [videoRef]);
   const onSubmit = (e) => {
     e.preventDefault();
-    if (!input?.length) alert('please type in msg before sending');
+    if (!input?.length) console.error('please type in msg before sending');
     console.log(`sending message "${input}" to room ${roomName}`);
     socketRef.current?.emit('message', input);
     setInput('');
@@ -456,15 +436,13 @@ const RoomPage = (
           title="You're the boss!"
           body="You can kick people you don't like if you want. If you need, you can always share the room link to invite a friend to chat with!"
         />
-      ) : !peersSocketId.length && !isLoading ? (
+      ) : (
         <p id="youJoinedNotCreated">
           you joined the room instead of CREATING ONE...
         </p>
-      ) : (
-        ''
       )}
       <div>
-        <h1 role="heading">Room name: {roomName || 'unknown'}</h1>
+        <h1 role="heading">Room name: {roomName}</h1>
         <div>
           <p
             style={{
@@ -482,20 +460,27 @@ const RoomPage = (
         <div>
           <p>(random dude from internet) {!hostRef.current ? '🤴👑' : ''}</p>
           <p>{peersSocketId ? `SocketId: ${peersSocketId}` : ''}</p>
-          <video autoPlay ref={peerVideoRef} />
+          <video
+            autoPlay
+            ref={peerVideoRef}
+            data-connected={!!peersSocketId.length}
+            id="peerVideo"
+          />
           {hostRef.current ? (
-            <button onClick={kickUser}>kick this noob</button>
+            <button onClick={kickUser} id="kickButton">
+              kick this noob
+            </button>
           ) : (
             ''
           )}
         </div>
-        <button onClick={toggleMic} type="button">
+        <button onClick={toggleMic} id="toggleMic" type="button">
           {micActive ? 'Mute Mic' : 'UnMute Mic'}
         </button>
-        <button onClick={leaveRoom} type="button">
+        <button onClick={leaveRoom} id="leaveRoom" type="button">
           Leave
         </button>
-        <button onClick={toggleCamera} type="button">
+        <button onClick={toggleCamera} id="toggleCamera" type="button">
           {cameraActive ? 'Stop Camera' : 'Start Camera'}
         </button>
         <form onSubmit={onSubmit}>

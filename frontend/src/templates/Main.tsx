@@ -25,6 +25,7 @@ const Main = (props: IMainProps) => (
             <li className="mr-6">
               <Link
                 href="/"
+                id="home"
                 className="border-none text-gray-700 hover:text-gray-900"
               >
                 Home
@@ -34,6 +35,7 @@ const Main = (props: IMainProps) => (
               <a
                 className="border-none text-gray-700 hover:text-gray-900"
                 href="https://github.com/BrycensRanch/Chatting-Platform"
+                id="gitHub"
               >
                 GitHub
               </a>

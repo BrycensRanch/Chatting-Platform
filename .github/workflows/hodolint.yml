@@ -1,4 +1,4 @@
-name: Hodolint (Dockerfile)
+name: Hodolint
 
 on:
   push:

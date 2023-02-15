@@ -7,7 +7,7 @@ const useSocket = () => {
       const socketInitializer = async () => {
         await fetch(
           `${
-            process.env.BACKEND_SERVER || 'http://localhost:8000'
+            process.env.NEXT_PUBLIC_BACKEND_SERVER || 'http://localhost:8000'
           }/v1/socket/new`,
           {
             credentials: 'include',

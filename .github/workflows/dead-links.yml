@@ -1,0 +1,81 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  schedule:
+    #        ┌───────────── minute (0 - 59)
+    #        │  ┌───────────── hour (0 - 23)
+    #        │  │ ┌───────────── day of the month (1 - 31)
+    #        │  │ │ ┌───────────── month (1 - 12 or JAN-DEC)
+    #        │  │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+    #        │  │ │ │ │
+    #        │  │ │ │ │
+    #        │  │ │ │ │
+    #        *  * * * *
+    - cron: '30 1 * * 0'
+name: dead links destroyer
+jobs:
+  linkinator:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: JustinBeckwith/linkinator-action@v1
+  await-for-vercel-deployment:
+    name: Await current deployment to be ready (Ubuntu 18.04)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolving deployment url from Vercel
+        id: resolve-deployment
+        # Workflow overview:
+        #   - Resolve customer to deploy from github event input (falls back to resolving it from vercel.json file)
+        #   - Resolve $VERCEL_DEPLOYMENT_URL
+        #     - Fetch all deployments data (by using the scope in `vercel.json`)
+        #     - Resolve the last url (from `response.deployments[0].url`)
+        #     - Remove the `"` character to pre-format url
+        # We need to set env the url for next step, formatted as `https://${$VERCEL_DEPLOYMENT}`
+        # XXX You can use https://jqplay.org/ if you want to play around with "jq" to manipulate JSON
+        run: |
+          # Build Vercel API endpoint used to fetch deployments
+          VERCEL_FETCH_DEPLOYMENTS_API_ENDPOINT="https://api.vercel.com/v6/deployments?projectId=$VERCEL_PROJECT_ID"
+          echo "Fetching Vercel deployments using API endpoint: " $VERCEL_FETCH_DEPLOYMENTS_API_ENDPOINT
+          # Fetch all Vercel deployment from this project
+          ALL_VERCEL_DEPLOYMENTS=`curl -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}' $VERCEL_FETCH_DEPLOYMENTS_API_ENDPOINT`
+          echo "Vercel deployments for current project: " $ALL_VERCEL_DEPLOYMENTS
+          # Parse the deployments (as json) to find the latest deployment url, while stripping the double quotes
+          # TODO Do not use '.deployments [0].url' blindly, but filter the deployments array first to make sure to consider only the deployments where "name" is related to the current commit
+          VERCEL_DEPLOYMENT=`echo $ALL_VERCEL_DEPLOYMENTS | jq '.deployments [0].url' | tr -d \"`
+          VERCEL_DEPLOYMENT_URL="https://$VERCEL_DEPLOYMENT"
+          echo "Url where to run E2E tests (VERCEL_DEPLOYMENT_URL): " $VERCEL_DEPLOYMENT_URL
+          echo "VERCEL_DEPLOYMENT_URL=$VERCEL_DEPLOYMENT_URL" >> $GITHUB_ENV
+          echo "VERCEL_DEPLOYMENT_URL=$VERCEL_DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          echo "VERCEL_DEPLOYMENT=$VERCEL_DEPLOYMENT" >> $GITHUB_ENV
+          echo "VERCEL_DEPLOYMENT=$VERCEL_DEPLOYMENT" >> $GITHUB_OUTPUT
+      # Wait for deployment to be ready, before running E2E (otherwise Cypress might start testing too early, and gets redirected to Vercel's "Login page", and tests fail)
+      - name: Awaiting Vercel deployment to be ready
+        uses: UnlyEd/github-action-await-vercel@v1.2.41
+        id: await-vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEl_TOKEN }}
+        with:
+          deployment-url: ${{ env.VERCEL_DEPLOYMENT }} # Must only contain the domain name (no http prefix, etc.)
+          timeout: 90 # Wait for 90 seconds before failing
+
+      - name: Display deployment status
+        run: "echo My deployment is ${{ fromJson(steps.await-vercel.outputs.deploymentDetails).readyState }}"
+    outputs:
+      VERCEL_DEPLOYMENT: ${{ steps.resolve-deployment.outputs.VERCEL_DEPLOYMENT_URL }}
+  crawl_for_broken_links:
+    runs-on: ubuntu-latest
+    name: Broken-Links-Crawler
+    needs: await-for-vercel-deployment
+    steps:
+    - name: Checking links
+      id: checking
+      uses: ScholliYT/Broken-Links-Crawler-Action@v3
+      with:
+        website_url: ${{needs.await-for-vercel-deployment.outputs.VERCEL_DEPLOYMENT}}
+        exclude_url_prefix: 'mailto:,https://www.linkedin.com,https://linkedin.com,https://twitter.com'
+        verbose: 'true'
+        max_retry_time: 30
+        max_retries: 5

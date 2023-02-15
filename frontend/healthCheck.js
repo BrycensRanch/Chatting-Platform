@@ -27,7 +27,9 @@ const options = {
   timeout: 5000, // 5 sec
   log: true, // if enabled, write log to console
 };
-const url = process.argv[2] || 'http://localhost:3000/api/health';
+const url =
+  process.argv[2] ||
+  `${process.env.FRONTEND_SERVER || 'http://localhost:3000'}/api/health`;
 if (options.log === true) {
   console.log(`GET call for healthcheck at: ${url} ...`);
 }

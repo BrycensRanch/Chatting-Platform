@@ -37,7 +37,7 @@ const Index = () => {
   const fetchRooms = async () => {
     if (!socketRef.current) {
       socketRef.current = io(
-        process.env.BACKEND_SERVER || 'http://localhost:8000',
+        process.env.NEXT_PUBLIC_BACKEND_SERVER || 'http://localhost:8000',
         {
           withCredentials: true,
         }
@@ -117,7 +117,9 @@ const Index = () => {
           // @ts-ignore
           return (
             <li key={room.name}>
-              <a href={`/room/${room.name}`}>{room.name}</a>
+              <a href={`/room/${room.name}`} id={`room-${room.name}`}>
+                {room.name}
+              </a>
             </li>
           );
         })}
@@ -151,6 +153,7 @@ const Index = () => {
               onClick={joinRoom}
               aria-label="Join Or Create Room"
               data-testid="joinOrCreateRoomButton"
+              id="joinOrCreateRoomButton"
               className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
             >
               Join/Create Room

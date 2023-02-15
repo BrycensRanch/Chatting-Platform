@@ -1,3 +1,52 @@
+
+github:
+  prebuilds:
+    # enable for the master/default branch (defaults to true)
+    master: true
+# enable for all branches in this repo (defaults to false)
+    branches: true
+# enable for pull requests coming from this repo (defaults to true)
+    pullRequests: true
+# enable for pull requests coming from forks (defaults to false)
+    pullRequestsFromForks: true
+# add a "Review in Gitpod" button as a comment to pull requests (defaults to true)
+    addComment: true
+# add a "Review in Gitpod" button to pull requests (defaults to false)
+    addBadge: true
+# add a label once the prebuild is ready to pull requests (defaults to false)
+    addLabel: prebuilt-in-gitpod
 tasks:
-  - init: npm run install-all:npm
-    command: yarn workspace nextjs-app run dev -p 3000
+  - before: >
+      mkdir -p ~/.ssh &&
+      [[ ! -z $SSH_PUBLIC_KEY  ]] &&
+      echo $SSH_PUBLIC_KEY > ~/.ssh/id_rsa.pub &&
+      chmod 644 ~/.ssh/id_rsa.pub &&
+      [[ ! -z $SSH_PRIVATE_KEY  ]] &&
+      echo $SSH_PRIVATE_KEY | base64 -d > ~/.ssh/id_rsa &&
+      chmod 600 ~/.ssh/id_rsa
+      [[ ! -z $GITCONFIG  ]] &&
+      echo $GITCONFIG | base64 -d > ~/.gitconfig &&
+      chmod 644 ~/.gitconfig
+      git config --global --unset gpg.program
+      git config --global --unset core.editor
+      git config --global --unset safe.directory
+      [[ ! -z $GNUPG_KEY  ]] &&
+      cd ~ &&
+      rm -rf .gnupg &&
+      gpg --verbose --batch --import <(echo $GNUPG_KEY|base64 -d) &&
+      echo 'pinentry-mode loopback' >> ~/.gnupg/gpg.conf &&
+      git config --global user.signingkey $GNUPG_SIGNING_KEY &&
+      git config --global commit.gpgsign true
+  - init: pnpm install 
+    command: cp .env.example .env && docker compose up cache-d  && pnpm build && pnpm dev
+
+# security issues, unauthorised commits to our repository 
+image: BrycensRanch/gitpod-enhanced
+vscode:
+  extensions:
+    - bradlc.vscode-tailwindcss
+    - davidanson.vscode-markdownlint
+    - mikestead.dotenv
+    - rvest.vs-code-prettier-eslint
+    - ms-azuretools.vscode-docker
+    - dbaeumer.vscode-eslint

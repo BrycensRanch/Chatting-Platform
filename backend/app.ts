@@ -36,13 +36,19 @@ const start = async () => {
       process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test',
   });
   await server.register(app.fastify);
-  const redis = new Redis(
-    process.env.REDIS_URL?.replace(
-      // eslint-disable-next-line no-template-curly-in-string
-      '${REDIS_PASSWORD}',
-      process.env.REDIS_PASSWORD as string
-    ) as string
-  );
+  let redis;
+  if (process.env.GIT_PROXY?.includes('stackblitz')) {
+    // eslint-disable-next-line import/no-extraneous-dependencies
+    redis = await import('ioredis-mock');
+  } else {
+    redis = new Redis(
+      process.env.REDIS_URL?.replace(
+        // eslint-disable-next-line no-template-curly-in-string
+        '${REDIS_PASSWORD}',
+        process.env.REDIS_PASSWORD as string
+      ) as string
+    );
+  }
 
   // @ts-ignore
   server.listen(
@@ -136,7 +142,11 @@ const start = async () => {
             if (room === undefined) {
               socket.join(roomName);
               socket.emit('created');
-            } else if (room.size === 1) {
+            } else if (
+              room.size === 1 &&
+              process.env.NODE_ENV !== 'production' &&
+              roomName !== 'full room'
+            ) {
               // room.size == 1 when one person is inside the room.
 
               socket.join(roomName);
@@ -154,6 +164,16 @@ const start = async () => {
               console.log(
                 `room admin of ${roomName} is now connected (${hostSocket})`
               );
+            } else if (
+              roomName === 'connect_error' &&
+              process.env.NODE_ENV !== 'production'
+            ) {
+              socket.emit('connect_error', new Error('banned room name'));
+            } else if (
+              roomName === 'kickout_event' &&
+              process.env.NODE_ENV !== 'production'
+            ) {
+              socket.emit('kickout', socket.id);
             } else {
               // when there are already two people inside the room.
               socket.emit('full');
