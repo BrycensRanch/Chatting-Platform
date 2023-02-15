@@ -15,13 +15,17 @@ import inclusion from 'inclusion';
 // eslint-disable-next-line import/no-named-default
 import { join } from 'path';
 
-require('dotenv-mono').load();
+import { frontendServerURL } from './constants';
 
-require(`dotenv-defaults`).config({
-  path: './.env',
-  encoding: 'utf8',
-  defaults: './.env.example', // This is new
-});
+require('dotenv-expand').expand(require('dotenv-mono').load());
+
+require('dotenv-expand').expand(
+  require(`dotenv-defaults`).config({
+    path: './.env',
+    encoding: 'utf8',
+    defaults: './.env.example', // This is new
+  })
+);
 
 export type AppOptions = {
   // // Place your custom options for app below here.
@@ -73,10 +77,7 @@ const fastify: FastifyPluginAsync<AppOptions> = async (
     contentSecurityPolicy: false,
   });
   await app.register(cors, {
-    origin: [
-      process.env.FRONTEND_SERVER || 'http://localhost:3000',
-      'https://www.piesocket.com',
-    ],
+    origin: [frontendServerURL, 'https://www.piesocket.com'],
     methods: ['GET', 'PUT', 'POST', 'DELETE'],
     credentials: true,
   });

@@ -3,13 +3,15 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 // all of these are the default values...
-require('dotenv-mono').load();
+require('dotenv-expand').expand(require('dotenv-mono').load());
 
-require(`dotenv-defaults`).config({
-  path: './.env',
-  encoding: 'utf8',
-  defaults: './.env.example', // This is new
-});
+require('dotenv-expand').expand(
+  require(`dotenv-defaults`).config({
+    path: './.env',
+    encoding: 'utf8',
+    defaults: './.env.example', // This is new
+  })
+);
 
 const { ConfigBuilder } = require('next-recompose-plugins');
 
@@ -23,12 +25,8 @@ const { ConfigBuilder } = require('next-recompose-plugins');
 const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self';
-  child-src brycens.tech ${
-    process.env.BACKEND_SERVER || 'http://localhost:8000'
-  };
-  style-src 'self' brycens.tech ${
-    process.env.BACKEND_SERVER || 'http://localhost:8000'
-  };
+  child-src 'self';
+  style-src 'self';
   font-src 'self';  
 `;
 

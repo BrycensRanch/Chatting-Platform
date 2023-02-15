@@ -15,6 +15,7 @@ import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
 import type { ClientToServerEvents, ServerToClientEvents } from '@/types';
 
+import { backendServerURL } from '../../constants';
 import useSocket from '../../hooks/useSocket';
 import type { Room } from '../index';
 
@@ -63,12 +64,9 @@ const RoomPage = (
   });
 
   useEffect(() => {
-    socketRef.current = io(
-      process.env.NEXT_PUBLIC_BACKEND_SERVER || 'http://localhost:8000',
-      {
-        withCredentials: true,
-      }
-    );
+    socketRef.current = io(backendServerURL, {
+      withCredentials: true,
+    });
     // reconnecting with out of order of events yields a broken page with out of sync data from the client and server
     socketRef.current.sendBuffer = [];
 

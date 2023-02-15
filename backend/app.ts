@@ -2,6 +2,7 @@
 import { createAdapter } from '@socket.io/redis-adapter';
 import { fastify } from 'fastify';
 import Redis from 'ioredis';
+import { backendPort } from './constants';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import * as app from './init';
@@ -53,7 +54,7 @@ const start = async () => {
   // @ts-ignore
   server.listen(
     {
-      port: process.env.PORT || process.env.FASTIFY_PORT || '8000',
+      port: backendPort,
       host: '::',
     },
     (err, address) => {
