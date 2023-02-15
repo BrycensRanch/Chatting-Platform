@@ -19,6 +19,7 @@
     "predocker": "pnpm cleanbuild",
     "docker": "docker build -t chatbackend . --no-cache --env-file ../.env",
     "clean": "rimraf dist",
+    "env": "sync-dotenv",
     "dev": "ts-node-dev --respawn --transpile-only app.ts",
     "format": "prettier-eslint --write \"{,!(node_modules)/**/}*.{js,jsx,ts,tsx}\"",
     "commit": "cz"
@@ -45,6 +46,7 @@
     "typescript": "^4.9.5"
   },
   "devDependencies": {
+    "@types/dotenv-defaults": "^2.0.1",
     "@types/ioredis-mock": "^8.2.1",
     "@types/node": "^18.13.0",
     "@types/tap": "^15.0.8",

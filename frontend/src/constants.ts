@@ -10,17 +10,18 @@ require('dotenv-expand').expand(
   })
 );
 
-const frontendPort = process.env.FRONTEND_PORT || process.env.PORT || 3000;
+export const frontendPort =
+  process.env.FRONTEND_PORT || process.env.PORT || 3000;
 
-const backendPort =
+export const backendPort =
   process.env.BACKEND_PORT ||
   process.env.FASTIFY_PORT ||
   process.env.PORT ||
   8000;
 
-const frontendServerURL = new URL(
+export const frontendServerURL = new URL(
   process.env.GITPOD_WORKSPACE_URL &&
-  process.env.FRONTEND_SERVER.includes('localhost')
+  process.env.FRONTEND_SERVER?.includes('localhost')
     ? new URL(
         `https://${frontendPort}-${
           new URL(process.env.GITPOD_WORKSPACE_URL).hostname
@@ -28,9 +29,9 @@ const frontendServerURL = new URL(
       )
     : process.env.FRONTEND_SERVER || 'http://localhost:3000'
 ).origin;
-const backendServerURL = new URL(
+export const backendServerURL = new URL(
   process.env.GITPOD_WORKSPACE_URL &&
-  process.env.NEXT_PUBLIC_BACKEND_SERVER.includes('localhost')
+  process.env.NEXT_PUBLIC_BACKEND_SERVER?.includes('localhost')
     ? new URL(
         `https://${backendPort}-${
           new URL(process.env.GITPOD_WORKSPACE_URL).hostname
@@ -40,10 +41,3 @@ const backendServerURL = new URL(
       `http://localhost:${backendPort}`
 ).origin;
 // const frontendServerURL =
-
-module.exports = {
-  frontendServerURL,
-  backendServerURL,
-  frontendPort,
-  backendPort,
-};

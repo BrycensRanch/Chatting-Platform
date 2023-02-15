@@ -25,7 +25,7 @@ const frontendServerURL = new URL(
           new URL(process.env.GITPOD_WORKSPACE_URL).hostname
         }`
       )
-    : process.env.FRONTEND_SERVER || 'http://localhost:3000'
+    : process.env.FRONTEND_SERVER || `http://localhost:${frontendPort}`
 ).origin;
 const backendServerURL = new URL(
   process.env.GITPOD_WORKSPACE_URL &&

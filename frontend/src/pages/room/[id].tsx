@@ -11,13 +11,13 @@ import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
 
 import Modal from '@/components/Medal';
+import { backendServerURL } from '@/constants';
+import useSocket from '@/hooks/useSocket';
+// eslint-disable-next-line import/order
+import type { Room } from '@/index';
 import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
 import type { ClientToServerEvents, ServerToClientEvents } from '@/types';
-
-import { backendServerURL } from '../../constants';
-import useSocket from '../../hooks/useSocket';
-import type { Room } from '../index';
 
 export const getServerSideProps: GetServerSideProps<{
   query: ParsedUrlQuery;
