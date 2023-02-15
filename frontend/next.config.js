@@ -125,7 +125,6 @@ const BuildingConfig = ConfigBuilder.defineConfig({
       },
     ];
   },
-  env: process.env,
 
   sentry: {
     // Use `hidden-source-map` rather than `source-map` as the Webpack `devtool`

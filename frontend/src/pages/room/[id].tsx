@@ -64,7 +64,7 @@ const RoomPage = (
 
   useEffect(() => {
     socketRef.current = io(
-      process.env.BACKEND_SERVER || 'http://localhost:8000',
+      process.env.NEXT_PUBLIC_BACKEND_SERVER || 'http://localhost:8000',
       {
         withCredentials: true,
       }

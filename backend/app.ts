@@ -36,13 +36,19 @@ const start = async () => {
       process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test',
   });
   await server.register(app.fastify);
-  const redis = new Redis(
-    process.env.REDIS_URL?.replace(
-      // eslint-disable-next-line no-template-curly-in-string
-      '${REDIS_PASSWORD}',
-      process.env.REDIS_PASSWORD as string
-    ) as string
-  );
+  let redis;
+  if (process.env.GIT_PROXY?.includes('stackblitz')) {
+    // eslint-disable-next-line import/no-extraneous-dependencies
+    redis = await import('ioredis-mock');
+  } else {
+    redis = new Redis(
+      process.env.REDIS_URL?.replace(
+        // eslint-disable-next-line no-template-curly-in-string
+        '${REDIS_PASSWORD}',
+        process.env.REDIS_PASSWORD as string
+      ) as string
+    );
+  }
 
   // @ts-ignore
   server.listen(

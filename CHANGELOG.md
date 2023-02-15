@@ -1,3 +1,51 @@
+# [1.5.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.4.2...v1.5.0) (2023-02-14)
+
+
+### Features
+
+* **repo:** add stackblitz support ([9579fa6](https://github.com/BrycensRanch/Chatting-Platform/commit/9579fa6d8bdf49fc063ae2016ea0797ad6f920f3))
+
+## [1.4.2](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.4.1...v1.4.2) (2023-02-14)
+
+
+### Bug Fixes
+
+* **frontend:** properly detect backend server ([9eaed05](https://github.com/BrycensRanch/Chatting-Platform/commit/9eaed05f49c983f297938f95d149e497691018a8))
+
+## [1.4.1](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.4.0...v1.4.1) (2023-02-14)
+
+
+### Bug Fixes
+
+* **docker:** fix deployment again ([0446d08](https://github.com/BrycensRanch/Chatting-Platform/commit/0446d0894b6db59fd9bf7715a066032978136b04))
+* **docker:** railway detection in deployment ([ed66563](https://github.com/BrycensRanch/Chatting-Platform/commit/ed66563d3eb5f3f6dfc3c5e1653cc042beb47732))
+
+# [1.4.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.3.0...v1.4.0) (2023-02-14)
+
+
+### Bug Fixes
+
+* **release:** update package.json files ([c33c79f](https://github.com/BrycensRanch/Chatting-Platform/commit/c33c79f7873d94fd0183c76c64438ea0b53adbfa))
+
+
+### Features
+
+* **docker:** railway dockerfile compat ([#39](https://github.com/BrycensRanch/Chatting-Platform/issues/39)) ([af5d2dc](https://github.com/BrycensRanch/Chatting-Platform/commit/af5d2dc2179b272597969c0d8775a4cf4a32cd7f))
+
+# [1.3.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.2.0...v1.3.0) (2023-02-13)
+
+
+### Features
+
+* **docker:** fix ci env variable ([d455d86](https://github.com/BrycensRanch/Chatting-Platform/commit/d455d861256ec6558e612004617a96cc0c9370ff))
+
+# [1.2.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.1.0...v1.2.0) (2023-02-13)
+
+
+### Features
+
+* **docker:** monorepo dockerfile ([#38](https://github.com/BrycensRanch/Chatting-Platform/issues/38)) ([6c12e69](https://github.com/BrycensRanch/Chatting-Platform/commit/6c12e69cc0e72778863206536599adad72f0b16c))
+
 # [1.1.0](https://github.com/BrycensRanch/Chatting-Platform/compare/v1.0.3...v1.1.0) (2023-02-11)
 
 
