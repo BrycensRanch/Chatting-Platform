@@ -25,5 +25,7 @@
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },
-  "eslint.workingDirectories": ["./frontend", "./backend"]
+  "eslint.workingDirectories": ["./frontend", "./backend"],
+  "jest.jestCommandLine": "npm run test:jest --",
+  "jest.rootPath": "./frontend"
 }
