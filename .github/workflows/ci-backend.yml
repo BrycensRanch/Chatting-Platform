@@ -108,7 +108,8 @@ jobs:
         uses: coderlane/tap-action@master
         with:
           working-directory: backend
-          tap_directory: './test/'
+          tap_extension: '.test.ts'
+          tap_directory: '${{ runner.workspace }}/backend/test'
 
       - uses: actions/github-script@v1
         if: always() && github.event_name == 'pull_request'
