@@ -1,18 +1,15 @@
 import { useEffect, useRef } from 'react';
 
+import { backendServerURL } from '@/constants';
+
 const useSocket = () => {
   const socketCreated = useRef(false);
   useEffect(() => {
     if (!socketCreated.current) {
       const socketInitializer = async () => {
-        await fetch(
-          `${
-            process.env.NEXT_PUBLIC_BACKEND_SERVER || 'http://localhost:8000'
-          }/v1/socket/new`,
-          {
-            credentials: 'include',
-          }
-        );
+        await fetch(`${backendServerURL}/v1/socket/new`, {
+          credentials: 'include',
+        });
       };
       try {
         socketInitializer();
