@@ -1,14 +1,16 @@
 /* eslint-disable import/no-anonymous-default-export */
 // all of these are the default values...
-require('dotenv-expand').expand(require('dotenv-mono').load());
+// import { expand } from 'dotenv-expand';
 
-require('dotenv-expand').expand(
-  require(`dotenv-defaults`).config({
-    path: './.env',
-    encoding: 'utf8',
-    defaults: './.env.example', // This is new
-  })
-);
+// expand(require('dotenv-mono').load());
+
+// expand(
+//   require(`dotenv-defaults`).config({
+//     path: './.env',
+//     encoding: 'utf8',
+//     defaults: './.env.example', // This is new
+//   })
+// );
 
 export const frontendPort = Number(
   process.env.FRONTEND_PORT || process.env.PORT || 3000
