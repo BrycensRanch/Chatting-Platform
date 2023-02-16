@@ -7,7 +7,7 @@ type IMedalProps = {
   body?: string;
 };
 
-export default function Modal(props: IMedalProps) {
+const Modal = (props: IMedalProps) => {
   const router = useRouter();
 
   const [showModal, setShowModal] = useState<boolean>(
@@ -72,9 +72,10 @@ export default function Modal(props: IMedalProps) {
                     data-testid="medal-button3"
                     id="medalDismiss"
                     onClick={() => {
-                      function delQuery(asPath: string) {
+                      const delQuery = (asPath: string) => {
                         return asPath.split('?')[0];
-                      }
+                      };
+
                       setShowModal(false);
                       router.push(`${delQuery(router.asPath)}`);
                     }}
@@ -90,4 +91,6 @@ export default function Modal(props: IMedalProps) {
       ) : null}
     </>
   );
-}
+};
+
+export default Modal;

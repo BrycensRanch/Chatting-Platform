@@ -12,12 +12,12 @@ const AppPath = path.join(__dirname, '..', 'init.ts');
 
 // Fill in this config with all the configurations
 // needed for testing the application
-async function config() {
+const config = async () => {
   return {};
-}
+};
 
 // Automatically build and tear down our instance
-async function build(t: Test) {
+const build = async (t: Test) => {
   // you can set all the options supported by the fastify CLI command
   const argv = [AppPath];
 
@@ -30,6 +30,6 @@ async function build(t: Test) {
   t.teardown(() => void app.close());
 
   return app;
-}
+};
 
 export { build, config };

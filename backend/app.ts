@@ -101,7 +101,7 @@ const start = async () => {
           setupWorker(io);
         }
 
-        io.sockets.on('connection', async function handleSocket(socket) {
+        io.sockets.on('connection', async (socket) => {
           /**
            * Handle message from a client
            * If toId is provided message will be sent ONLY to the client with that id
@@ -148,7 +148,6 @@ const start = async () => {
               roomName !== 'full room'
             ) {
               // room.size == 1 when one person is inside the room.
-
               socket.join(roomName);
               const rawRooms = Array.from(io.of('/').adapter.rooms);
               const room = rawRooms
