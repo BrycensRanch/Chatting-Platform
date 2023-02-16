@@ -118,7 +118,7 @@ jobs:
       #     pnpm e2e:headless
       - name: Install Cypress
         run: 
-         cd frontend
+         cd frontend &&
          pnpm add -g cypress
       - name: 🧪 Run E2E Tests
         if: ${{ !env.ACT }} 
