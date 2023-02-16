@@ -127,7 +127,6 @@ jobs:
           build: pnpm build
           start: pnpm dev:cypress
           wait-on: 'http://localhost:3000/api/health, http://localhost:8000/v1/health'
-          install: true
           install-command: pnpm install -g cypress
       - uses: actions/upload-artifact@v3
         if: failure()
