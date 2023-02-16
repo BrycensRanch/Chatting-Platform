@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react-hooks/rules-of-hooks */
 // eslint-disable-next-line @next/next/no-document-import-in-page
 import { useRouter } from 'next/router';
@@ -10,6 +11,8 @@ import useSocket from '@/hooks/useSocket';
 import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
 import type { ClientToServerEvents, ServerToClientEvents } from '@/types';
+
+import { backendServerURL } from '../constants';
 
 export type Room = {
   name: string;
@@ -36,12 +39,9 @@ const Index = () => {
   });
   const fetchRooms = async () => {
     if (!socketRef.current) {
-      socketRef.current = io(
-        process.env.NEXT_PUBLIC_BACKEND_SERVER || 'http://localhost:8000',
-        {
-          withCredentials: true,
-        }
-      );
+      socketRef.current = io(backendServerURL, {
+        withCredentials: true,
+      });
       socketRef.current.on('connect_error', (err) => {
         console.log(`connect_error due to ${err.message}`);
       });

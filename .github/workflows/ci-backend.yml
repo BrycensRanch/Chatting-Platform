@@ -102,6 +102,27 @@ jobs:
         env: 
            COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
            NEXTJS_SENTRY_UPLOAD_DRY_RUN: true
+      - name: Parse
+        id: parse
+        if: ${{ always() }}
+        uses: coderlane/tap-action@master
+        with:
+          working-directory: backend
+          tap_extension: '.tap'
+          tap_directory: './backend/test'
+
+      - uses: actions/github-script@v1
+        if: always() && github.event_name == 'pull_request'
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Total Tests: ${{ steps.parse.outputs.tap_count }} Passed: ${{ steps.parse.outputs.tap_pass }} Failed: ${{ steps.parse.outputs.tap_fail }} '
+            })
+
       # - uses: codecov/codecov-action@v3
       #   with:
       #     flags: unittests-backend # optional

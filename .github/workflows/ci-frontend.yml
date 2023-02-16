@@ -58,12 +58,6 @@ jobs:
       - name: 📥 Monorepo install all deps & pnpm
         uses: ./.github/actions/pnpm-install
 
-      # - name: Install Cypress
-      #   uses: cypress-io/github-action@v5
-      #   with:
-      #     # just perform install
-      #     runTests: false
-
       # see https://github.com/vercel/next.js/pull/27362
       - name: Restore frontend build from cache
         uses: actions/cache@v3
@@ -117,21 +111,28 @@ jobs:
       #     start: pnpm e2e:headless
       #     wait-on: 'http://localhost:3000'
       #     install: false
-      - name: 🧪 Run E2E Tests (Cypress bash)
+      # - name: 🧪 Run E2E Tests (Cypress bash)
+      #   if: ${{ !env.ACT }} 
+      #   working-directory: ./frontend
+      #   run: |
+      #     pnpm e2e:headless
+      - name: Install Cypress
+        run: 
+         cd frontend &&
+         pnpm add -g cypress
+      - name: 🧪 Run E2E Tests
         if: ${{ !env.ACT }} 
-        working-directory: ./frontend
-        run: |
-          pnpm e2e:headless
-        # uses: cypress-io/github-action@v5
-        # with:
-        #   working-directory: ./frontend
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: ./frontend
           # just for full picture after installing Cypress
           # print information about detected browsers, etc
           # see https://on.cypress.io/command-line#cypress-info
-          # build: pnpm build
-          # start: pnpm e2e:headless
-          # wait-on: 'http://localhost:3000'
-          # install: false
+          build: pnpm build
+          start: pnpm dev:cypress
+          wait-on: 'http://localhost:3000/api/health, http://localhost:8000/v1/health'
+          install: false
+
       - uses: actions/upload-artifact@v3
         if: failure()
         with:

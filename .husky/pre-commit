@@ -4,6 +4,7 @@
 # Disable concurent to run `check-types` after ESLint in lint-staged
 pnpm exec lint-staged --concurrent false
 # Sync possible .env changes to .env.example 
-# pnpm exec run-s env 
+pnpm -r run env 
 
+echo "UP UP AND AWAYYYYYY RAHHHHHHHHHH"
 # Sync env file with types

@@ -35,6 +35,8 @@ tasks:
       rm -rf .gnupg &&
       gpg --verbose --batch --import <(echo $GNUPG_KEY|base64 -d) &&
       echo 'pinentry-mode loopback' >> ~/.gnupg/gpg.conf &&
+      nvm install && 
+      nvm use &&
       git config --global user.signingkey $GNUPG_SIGNING_KEY &&
       git config --global commit.gpgsign true
   - init: pnpm install 
