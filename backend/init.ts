@@ -15,6 +15,8 @@ import inclusion from 'inclusion';
 // eslint-disable-next-line import/no-named-default
 import { join } from 'path';
 
+import socketAPI from './socket';
+
 require('dotenv-mono').load();
 
 require(`dotenv-defaults`).config({
@@ -81,6 +83,10 @@ const fastify: FastifyPluginAsync<AppOptions> = async (
     credentials: true,
   });
 
+  // Initialize socket.io API
+  await socketAPI(app);
+
+  // await app.register(inputValidation, {
   // This loads all plugins defined in plugins
   // those should be support plugins that are reused
   // through your application
