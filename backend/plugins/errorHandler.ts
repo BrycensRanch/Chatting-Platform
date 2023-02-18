@@ -12,7 +12,6 @@ export default fp(async (fastify: FastifyInstance) => {
   if (SENTRY_DSN) {
     fastify.setErrorHandler(async (err, _req, reply) => {
       reply.status(500);
-      // @ts-ignore
       fastify.Sentry.captureException(err);
       return reply.send(err);
     });

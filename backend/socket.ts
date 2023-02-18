@@ -5,6 +5,7 @@ import { basename, join } from 'node:path';
 import { createAdapter } from '@socket.io/redis-adapter';
 import type { FastifyInstance } from 'fastify';
 import Redis from 'ioredis';
+import type { Server, Socket } from 'socket.io';
 
 const deepReadDir = async (dirPath) =>
   Promise.all(
@@ -81,18 +82,36 @@ const socketAPI = async (server: FastifyInstance) => {
     setupWorker(io);
   }
 
-  io.sockets.on('connection', async (socket) => {
-    const socketEvents = (await deepReadDir('sockets')).flat(
-      Number.POSITIVE_INFINITY
-    );
-    socketEvents.forEach(async (socketEvent) => {
+  const socketEvents = (await deepReadDir('sockets')).flat(
+    Number.POSITIVE_INFINITY
+  );
+  type EventFunction<A, O> = (...args: A[]) => O;
+
+  interface SocketEvent {
+    default:
+      | AsyncFunction<[Socket, Server], void>
+      | EventFunction<[Socket, Server], void>;
+  }
+  type AsyncFunction<A, O> = (...args: A[]) => Promise<O>;
+  const importedSocketEvents = await Promise.all(
+    socketEvents.map(async (socketEvent) => {
       const eventName = basename(
         socketEvent.split('/').pop().split('.').shift()
       );
-      const event = await import(join(__dirname, socketEvent));
+      const event: SocketEvent = await import(join(__dirname, socketEvent));
+      return { eventName, event };
+    })
+  );
 
-      server.log.info(`Socket event ${eventName} loaded.`);
-      socket.on(eventName, await event.default.bind(null, socket, io));
+  io.sockets.on('connection', async (socket) => {
+    importedSocketEvents.forEach(async (socketEvent) => {
+      server.log.info(
+        `Socket event ${socketEvent.eventName} loaded for socket ${socket.id}`
+      );
+      socket.on(
+        socketEvent.eventName,
+        socketEvent.event.default.bind(null, socket, io)
+      );
     });
   });
 };

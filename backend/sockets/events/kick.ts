@@ -1,11 +1,16 @@
 import type { Server, Socket } from 'socket.io';
+import type { z } from 'zod';
+
+import { roomRequiredSchema, socketIdSchema } from './message';
 
 export default async (
   socket: Socket,
   io: Server,
-  socketId: string,
-  roomName: string
+  socketId: z.infer<typeof socketIdSchema>,
+  roomName: z.infer<typeof roomRequiredSchema>
 ) => {
+  socketIdSchema.parse(socketId);
+  roomRequiredSchema.parse(roomName);
   // @ts-expect-error
   const hostSocketId = Array.from(io.of('/').adapter.rooms.get(roomName))[0];
   io.fastify.log.info(

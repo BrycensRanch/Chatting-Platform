@@ -1,6 +1,14 @@
 import type { Server, Socket } from 'socket.io';
+import type { z } from 'zod';
 
-export default async (socket: Socket, io: Server, roomName: string) => {
+import { roomRequiredSchema } from './message';
+
+export default async (
+  socket: Socket,
+  io: Server,
+  roomName: z.infer<typeof roomRequiredSchema>
+) => {
+  roomRequiredSchema.parse(roomName);
   const { rooms } = io.sockets.adapter;
   const room = rooms.get(roomName);
   if (roomName.length > 50) return;

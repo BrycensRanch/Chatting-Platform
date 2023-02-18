@@ -1,5 +1,13 @@
 /* eslint-disable no-console */
 import type { Server, Socket } from 'socket.io';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { z } from 'zod';
+
+export const messageSchema = z.string().min(1).max(2000);
+export const toIdSchema = z.string().min(1).max(2000).optional();
+export const roomSchema = z.string().min(1).max(100).optional();
+export const roomRequiredSchema = z.string().min(1).max(100);
+export const socketIdSchema = z.string().min(1).max(200);
 
 /**
  * Handle message from a client
@@ -10,18 +18,12 @@ import type { Server, Socket } from 'socket.io';
 export default async (
   socket: Socket,
   io: Server,
-  rawMessage: any,
-  toId = null,
-  room = null
+  message: z.infer<typeof messageSchema>,
+  toId: z.infer<typeof toIdSchema>,
+  room: z.infer<typeof roomSchema>
 ) => {
-  let message;
-  try {
-    message = JSON.parse(rawMessage);
-  } catch (e) {
-    io.fastify.log.error('client sent raw message that isnt json');
-  }
-  if (!message) message = rawMessage;
-  if (message.length > 2000) return; // this feature requires discord nitro :)
+  messageSchema.parse(message);
+  io.fastify.log.info('message', message, toId, room, socket.id, socket, io);
   if (toId) {
     io.fastify.log.info('From ', socket.id, ' to ', toId, message);
 

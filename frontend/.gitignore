@@ -11,6 +11,8 @@
 /cypress-coverage
 /reports
 
+npmlist.json
+
 # cypress
 cypress/screenshots
 cypress/videos
