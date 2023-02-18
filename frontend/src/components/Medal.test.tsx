@@ -33,7 +33,7 @@ afterEach(() => {
 
 describe('Medal component', () => {
   describe('Render method', () => {
-    it('medal', async () => {
+    it('medal should NOT render right away', async () => {
       const title = 'Random title';
       const body = 'Random description';
       render(<Medal initialValue={false} title={title} body={body} />);
@@ -44,6 +44,34 @@ describe('Medal component', () => {
       });
       // dismiss button
       await fireEvent.click(screen.getByTestId('medal-button3'));
+      // medal is gone
+      // eslint-disable-next-line testing-library/no-await-sync-query, testing-library/prefer-presence-queries
+      // expect(screen.getByText('Close')).not.toBeInTheDocument();
+    });
+
+    it('medal should render right away', async () => {
+      const title = 'Random title2';
+      const body = 'Random description2';
+      render(<Medal initialValue={true} title={title} body={body} />);
+      const medalTitle = screen.getByTestId('medal-title');
+      expect(medalTitle).toHaveTextContent(title);
+
+      // dismiss button
+      await fireEvent.click(screen.getByTestId('medal-button3'));
+      // medal is gone
+      // eslint-disable-next-line testing-library/no-await-sync-query, testing-library/prefer-presence-queries
+      // expect(screen.getByText('Close')).not.toBeInTheDocument();
+    });
+
+    it('medal should render right away and close', async () => {
+      const title = 'Random title2';
+      const body = 'Random description2';
+      render(<Medal initialValue={true} title={title} body={body} />);
+      const medalTitle = screen.getByTestId('medal-title');
+      expect(medalTitle).toHaveTextContent(title);
+
+      // dismiss button
+      await fireEvent.click(screen.getByTestId('medal-button2'));
       // medal is gone
       // eslint-disable-next-line testing-library/no-await-sync-query, testing-library/prefer-presence-queries
       // expect(screen.getByText('Close')).not.toBeInTheDocument();
