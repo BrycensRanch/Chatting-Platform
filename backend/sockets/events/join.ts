@@ -27,7 +27,9 @@ export default async (socket: Socket, io: Server, roomName: string) => {
       .find((r) => r.name === roomName);
     socket.emit('joined', room);
     const hostSocket = room?.sockets[0];
-    console.log(`room admin of ${roomName} is now connected (${hostSocket})`);
+    io.fastify.log.info(
+      `room admin of ${roomName} is now connected (${hostSocket})`
+    );
   } else if (
     roomName === 'connect_error' &&
     process.env.NODE_ENV !== 'production'

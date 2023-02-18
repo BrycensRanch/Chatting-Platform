@@ -18,20 +18,20 @@ export default async (
   try {
     message = JSON.parse(rawMessage);
   } catch (e) {
-    console.error('client sent raw message that isnt json');
+    io.fastify.log.error('client sent raw message that isnt json');
   }
   if (!message) message = rawMessage;
   if (message.length > 2000) return; // this feature requires discord nitro :)
   if (toId) {
-    console.log('From ', socket.id, ' to ', toId, message);
+    io.fastify.log.info('From ', socket.id, ' to ', toId, message);
 
     io.to(toId).emit('message', message, socket.id);
   } else if (room) {
-    console.log('From ', socket.id, ' to room: ', room, message);
+    io.fastify.log.info('From ', socket.id, ' to room: ', room, message);
 
     socket.broadcast.to(room).emit('message', message, socket.id);
   } else {
-    console.log('From ', socket.id, ' to everyone ', message);
+    io.fastify.log.info('From ', socket.id, ' to everyone ', message);
 
     socket.broadcast.emit('message', message, socket.id);
   }

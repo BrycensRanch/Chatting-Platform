@@ -49,7 +49,7 @@ const start = async () => {
         process.env.NODE_APP_INSTANCE === '0' ||
         (!process.env.NODE_APP_INSTANCE && process.env.NODE_ENV !== 'test')
       ) {
-        console.log(`Server listening at ${address}`);
+        server.log.info(`Server listening at ${address}`);
       }
     }
   );

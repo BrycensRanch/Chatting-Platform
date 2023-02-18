@@ -54,6 +54,7 @@ const socketAPI = async (server: FastifyInstance) => {
 
   // if (good) socketIOOptions.wsEngine = require('eiows').Server;
   const io = require('socket.io')(server.server, socketIOOptions);
+  io.fastify = server;
 
   if (!process.env.NODE_APP_INSTANCE) {
     let subClient;
@@ -65,8 +66,10 @@ const socketAPI = async (server: FastifyInstance) => {
       const { setupMaster } = require('@socket.io/sticky');
       setupMaster(io);
       subClient = new RedisMock();
-      console.error(`Guessing this is an testing environment without Redis...`);
-      console.error('Using in memory adapter instead of Redis adapter.');
+      io.fastify.log.error(
+        `Guessing this is an testing environment without Redis...`
+      );
+      io.fastify.log.error('Using in memory adapter instead of Redis adapter.');
     }
     if (subClient) io.adapter(createAdapter(redis, subClient));
   } else {
@@ -82,16 +85,20 @@ const socketAPI = async (server: FastifyInstance) => {
     const socketEvents = (await deepReadDir('sockets')).flat(
       Number.POSITIVE_INFINITY
     );
-    console.log(socketEvents);
     socketEvents.forEach(async (socketEvent) => {
       const eventName = basename(
         socketEvent.split('/').pop().split('.').shift()
       );
       const event = await import(join(__dirname, socketEvent));
 
-      console.log(`Socket event ${eventName} loaded.`);
+      server.log.info(`Socket event ${eventName} loaded.`);
       socket.on(eventName, await event.default.bind(null, socket, io));
     });
   });
 };
+declare module 'socket.io' {
+  interface Server {
+    fastify: FastifyInstance;
+  }
+}
 export default socketAPI;

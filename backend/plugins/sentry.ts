@@ -23,7 +23,7 @@ export default fp<
       setErrorHandler: false,
     });
   } else {
-    console.log(
+    fastify.log.info(
       'did not load sentry because no sentry_dsn environment variable was provided'
     );
   }

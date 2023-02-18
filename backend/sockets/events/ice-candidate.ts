@@ -6,6 +6,6 @@ export default async (
   iceCandidate: RTCIceCandidate,
   roomName: string
 ) => {
-  console.log(iceCandidate);
+  io.fastify.log.info(iceCandidate);
   socket.broadcast.to(roomName).emit('ice-candidate', iceCandidate); // Informs the other peer in the room.
 }; // End of async default function.
