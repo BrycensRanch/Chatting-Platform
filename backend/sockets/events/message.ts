@@ -20,18 +20,20 @@ export default async (
   io: Server,
   message: z.infer<typeof messageSchema>,
   toId: z.infer<typeof toIdSchema>,
-  room: z.infer<typeof roomSchema>
+  roomName: z.infer<typeof roomSchema>
 ) => {
-  messageSchema.parse(message);
-  io.fastify.log.info('message', message, toId, room, socket.id, socket, io);
+  messageSchema.safeParse(message);
+  toIdSchema.safeParse(toId);
+  roomSchema.safeParse(roomName);
+
   if (toId) {
     io.fastify.log.info('From ', socket.id, ' to ', toId, message);
 
     io.to(toId).emit('message', message, socket.id);
-  } else if (room) {
-    io.fastify.log.info('From ', socket.id, ' to room: ', room, message);
+  } else if (roomName) {
+    io.fastify.log.info('From ', socket.id, ' to room: ', roomName, message);
 
-    socket.broadcast.to(room).emit('message', message, socket.id);
+    socket.broadcast.to(roomName).emit('message', message, socket.id);
   } else {
     io.fastify.log.info('From ', socket.id, ' to everyone ', message);
 

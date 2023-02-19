@@ -8,7 +8,7 @@ export default async (
   io: Server,
   roomName: z.infer<typeof roomRequiredSchema>
 ) => {
-  roomRequiredSchema.parse(roomName);
+  roomRequiredSchema.safeParse(roomName);
   socket.leave(roomName);
   socket.broadcast.to(roomName).emit('leave');
 };

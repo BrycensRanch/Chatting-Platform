@@ -9,7 +9,7 @@ export default async (
   webcamActive: boolean,
   roomName: z.infer<typeof roomRequiredSchema>
 ) => {
-  roomRequiredSchema.parse(roomName);
+  roomRequiredSchema.safeParse(roomName);
 
   socket.broadcast
     .to(roomName)

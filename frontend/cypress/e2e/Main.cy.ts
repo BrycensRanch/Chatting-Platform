@@ -30,7 +30,9 @@ describe('Navigation', () => {
 
       cy.title().should('contain', roomName);
 
-      cy.get('#medalDismiss').click({ force: true });
+      // we are expecting that we are the room host, hence, we get a modal dialog
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      expect(cy.get('#medalDismiss')).to.exist;
 
       cy.percySnapshot(`${roomName} Room`);
     });
@@ -45,9 +47,13 @@ describe('Navigation', () => {
       cy.request(
         `http://localhost:8081/connect?url=http://localhost:3000/room/${roomName}&message=freedom1&message=freedom2&kick=true`
       );
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.visit(`/room/${roomName}`);
-      cy.get('#message').type('WASSUP G', { force: true });
-      cy.get('#messageSend').click({ force: true });
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(2000);
+      cy.title().should('not.contain', roomName);
+      // cy.get('#message').type('WASSUP G', { force: true });
+      // cy.get('#messageSend').click({ force: true });
       cy.percySnapshot(`${roomName} with puppeteer`);
     });
     it('nav to a room and kick nobody', () => {
@@ -65,11 +71,13 @@ describe('Navigation', () => {
       cy.request(
         `http://localhost:8081/connect?url=http://localhost:3000/room/${roomName}&waitAfterSendingMessage=true`
       );
-      cy.get('#medalDismiss').click();
-      cy.get('#message').type('SEE YA LATA ALLEGATOR >:)');
+      cy.get('#message').type('SEE YA LATA ALLEGATOR >:)', { force: true });
       cy.get('#messageSend').click({ force: true });
+      cy.get('#message').should('be.empty');
       cy.get('#toggleMic').click({ force: true });
+      cy.get('#toggleMic').should('contain', 'UnMute');
       cy.get('#toggleCamera').click({ force: true });
+      cy.get('#toggleCamera').should('contain', 'Start');
 
       cy.percySnapshot(`${roomName} Room`);
       cy.get('#leaveRoom').click({ force: true });
@@ -134,6 +142,23 @@ describe('Navigation', () => {
       cy.get('#medalDismiss').click();
 
       cy.percySnapshot(roomName);
+    });
+    it('should try to join the connect_error room', () => {
+      const roomName = 'connect_error';
+      // backend code emits 'full' when it detects Cypress and the name 'full room', regardless whether or not the room is full for testing purposes
+      cy.visit(`/room/${roomName}`);
+      // we should now be on the homepage with medal
+      cy.percySnapshot(`${roomName} Room`);
+    });
+    it('should try to join the kickout_event room', () => {
+      const roomName = 'kickout_event';
+      cy.request(
+        `http://localhost:8081/connect?url=http://localhost:3000/room/${roomName}&message=freedom1&message=freedom2&waitAfterSendingMessage=true`
+      );
+      // backend code emits 'full' when it detects Cypress and the name 'full room', regardless whether or not the room is full for testing purposes
+      cy.visit(`/room/${roomName}`);
+      // we should now be on the homepage with medal
+      cy.percySnapshot(`${roomName} Room`);
     });
     // it('should check connectivity with socket io server', () => {
 

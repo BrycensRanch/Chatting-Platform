@@ -9,7 +9,6 @@ export default async (
   offer: RTCSessionDescriptionInit,
   roomName: z.infer<typeof roomRequiredSchema>
 ) => {
-  roomRequiredSchema.parse(roomName);
-
+  roomRequiredSchema.safeParse(roomName);
   socket.broadcast.to(roomName).emit('offer', offer); // Informs the other peer in the room.
 }; // End of async default function.

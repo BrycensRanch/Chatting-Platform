@@ -1,5 +1,7 @@
 import type { Socket } from 'socket.io-client';
 
+import type { Room } from './pages';
+
 // I WANNNA GO HOMEEEEEEEEEEEEEEEEEEE
 // WHY ARE TYPES THIS PAINFUL FOR SOCKET IO!?!?1 WHY!?!?!?
 
@@ -9,7 +11,7 @@ export interface ServerToClientEvents {
   noArg: () => void;
   basicEmit: (a: number, b: string, c: Buffer) => void;
   withAck: (d: string, callback: (e: number) => void) => void;
-  joined: () => void;
+  joined: (room: Room) => void;
   created: () => void;
   ready: (socketId: string) => void;
   leave: () => void;

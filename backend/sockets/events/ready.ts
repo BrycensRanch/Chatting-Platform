@@ -8,6 +8,6 @@ export default async (
   io: Server,
   roomName: z.infer<typeof roomRequiredSchema>
 ) => {
-  roomRequiredSchema.parse(roomName);
+  roomRequiredSchema.safeParse(roomName);
   socket.broadcast.to(roomName).emit('ready', socket.id); // Informs the other peer in the room.
 };

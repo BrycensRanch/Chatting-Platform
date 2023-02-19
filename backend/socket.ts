@@ -3,6 +3,8 @@ import { readdir } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 
 import { createAdapter } from '@socket.io/redis-adapter';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import detect from 'detect-port';
 import type { FastifyInstance } from 'fastify';
 import Redis from 'ioredis';
 import type { Server, Socket } from 'socket.io';
@@ -19,7 +21,8 @@ const socketAPI = async (server: FastifyInstance) => {
   let redis: Redis;
   if (
     process.env.GIT_PROXY?.includes('stackblitz') ||
-    process.env.NODE_ENV === 'test'
+    process.env.NOREDIS ||
+    !(await detect(6379))
   ) {
     // eslint-disable-next-line import/no-extraneous-dependencies
     const { default: Redis } = await import('ioredis-mock');
@@ -63,10 +66,10 @@ const socketAPI = async (server: FastifyInstance) => {
       subClient = redis.duplicate();
     } catch (e) {
       // eslint-disable-next-line import/no-extraneous-dependencies
-      const { default: RedisMock } = await import('ioredis-mock');
-      const { setupMaster } = require('@socket.io/sticky');
-      setupMaster(io);
-      subClient = new RedisMock();
+      // const { default: RedisMock } = await import('ioredis-mock');
+      // const { setupWorker } = require('@socket.io/sticky');
+      // setupWorker(io);
+      // subClient = new RedisMock();
       io.fastify.log.error(
         `Guessing this is an testing environment without Redis...`
       );
@@ -102,15 +105,15 @@ const socketAPI = async (server: FastifyInstance) => {
       return { eventName, event };
     })
   );
+  server.log.info(
+    `Socket events loaded: ${importedSocketEvents.length + 1} events`
+  );
 
-  io.sockets.on('connection', async (socket) => {
+  io.sockets.on('connection', async (socket: Socket) => {
     importedSocketEvents.forEach(async (socketEvent) => {
-      server.log.info(
-        `Socket event ${socketEvent.eventName} loaded for socket ${socket.id}`
-      );
       socket.on(
         socketEvent.eventName,
-        socketEvent.event.default.bind(null, socket, io)
+        await socketEvent.event.default.bind(null, socket, io)
       );
     });
   });

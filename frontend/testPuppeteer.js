@@ -1,5 +1,10 @@
+/* eslint-disable no-console */
 // eslint-disable-next-line import/no-extraneous-dependencies
 const puppeteer = require('puppeteer');
+
+const wait = (milliseconds) =>
+  // eslint-disable-next-line no-promise-executor-return
+  new Promise((r) => setTimeout(r, milliseconds));
 // eslint-disable-next-line import/no-extraneous-dependencies
 const express = require('express');
 const { EventEmitter } = require('events');
@@ -27,12 +32,8 @@ events.on('connect', async (req, res) => {
     ],
   });
   const page = await browser.newPage();
-  await page.goto(url, { waitUntil: 'networkidle2' });
-  // await page.setViewport({ width: 1920, height: 1080 });
-  const wait = (milliseconds) =>
-    // eslint-disable-next-line no-promise-executor-return
-    new Promise((r) => setTimeout(r, milliseconds));
-  await wait(2500);
+  await page.goto(url, { waitUntil: 'networkidle0' });
+  await page.setViewport({ width: 1920, height: 1080 });
   console.log(`sending message: ${message}`);
   if (Array.isArray(message) && message.length && message !== 'undefined') {
     const promises = [];
@@ -52,9 +53,7 @@ events.on('connect', async (req, res) => {
     await page.click('#messageSend');
   }
   if (kick) {
-    await res.send('ok');
-    await wait(3000);
-    await page.click('#kickButton');
+    events.emit('kick', req, res, browser, page);
   }
   if (leave) {
     await wait(1000);
@@ -65,11 +64,15 @@ events.on('connect', async (req, res) => {
     await res.send('ok');
     await wait(2500);
     await browser.close();
-  } else if (kick) {
-    await browser.close();
   } else {
     await res.send('ok');
     await browser.close();
   }
 });
 app.listen(8081, () => {});
+events.on('kick', async (req, res, browser, page) => {
+  await res.send('ok');
+  await wait(1200);
+  await page.click('#kickButton');
+  await browser.close();
+});

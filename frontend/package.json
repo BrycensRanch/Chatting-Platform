@@ -41,7 +41,7 @@
     "see-cy-coverage": "pnpm dlx open ./cypress-coverage/lcov-report/index.html",
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
-    "dev:cypress": "concurrently --raw \"node testPuppeteer.js\" \"cd .. && npm run dev\"",
+    "dev:cypress": "concurrently --raw \"pm2-runtime start --watch puppeteer.ecosystem.config.js\" \"cd .. && npm run dev\"",
     "e2e": "start-server-and-test 'npm run dev:cypress' http://localhost:3000 cypress",
     "e2e:headless": "start-server-and-test 'npm run dev:cypress' http://localhost:3000 cypress:headless",
     "format": "prettier-eslint --write \"{,!(node_modules)/**/}*.{js,jsx,ts,tsx}\"",
