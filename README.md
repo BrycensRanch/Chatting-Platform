@@ -49,6 +49,9 @@
     </a>
 </p>
 
+> ⚠️ Project archived, while I have enjoyed WebRTC, it's proven too unstable for me to actively work on as a platform. ⚠️
+> For now, I'll be using my time more wisely to start focusing on UI design as a full stack developer. God speed.
+
 ## Project Goals
 
 - Chat Notifications
