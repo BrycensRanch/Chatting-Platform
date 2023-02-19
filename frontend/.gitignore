@@ -10,6 +10,9 @@
 /jest-coverage
 /cypress-coverage
 /reports
+robots.txt
+sitemap.xml
+sitemap-*.xml
 
 npmlist.json
 
